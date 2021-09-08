@@ -66,9 +66,9 @@ fun main() {
  * Рассчитать время в секундах, прошедшее с начала суток (30035 в данном случае).
  */
 fun seconds(hours: Int, minutes: Int, seconds: Int): Int {
-    val ch: Int = hours * 60 * 60
-    val min: Int = minutes * 60
-    val sum: Int = ch + min + seconds
+    val ch = hours * 60 * 60
+    val min = minutes * 60
+    val sum = ch + min + seconds
     return (sum)
 }
 
@@ -80,10 +80,10 @@ fun seconds(hours: Int, minutes: Int, seconds: Int): Int {
  * 1 сажень = 3 аршина = 48 вершков, 1 вершок = 4.445 см.
  */
 fun lengthInMeters(sagenes: Int, arshins: Int, vershoks: Int): Double {
-    val sag: Double = sagenes * 48 * 4.445
-    val ars: Double = arshins * 16 * 4.445
-    val ver: Double = vershoks * 4.445
-    val sumcm: Double = sag + ars + ver
+    val sag = sagenes * 48 * 4.445
+    val ars = arshins * 16 * 4.445
+    val ver = vershoks * 4.445
+    val sumcm = sag + ars + ver
     return (sumcm / 100)
 }
 
@@ -121,8 +121,8 @@ fun trackLength(x1: Double, y1: Double, x2: Double, y2: Double): Double {
  */
 fun thirdDigit(number: Int): Int {
     val number: String = number.toString()
-    val x: Int = number[number.count() - 3].toInt()
-    return (x - 48)
+    val x: Int = number[number.count() - 3].digitToInt()
+    return (x)
 }
 
 /**
@@ -160,6 +160,5 @@ fun accountInThreeYears(initial: Int, percent: Int): Double {
 fun numberRevert(number: Int): Int {
     val number: String = number.toString()
     val x: String = number.reversed()
-    val y: Int = x.toInt()
-    return (y)
+    return (x.toInt())
 }
