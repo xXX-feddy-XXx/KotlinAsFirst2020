@@ -89,27 +89,9 @@ fun circleInside(
  * Вернуть true, если кирпич пройдёт
  */
 fun brickPasses(a: Int, b: Int, c: Int, r: Int, s: Int): Boolean {
-    var mn1: Int
-    var mn2: Int
-    if ((a <= b) && (b <= c)) {
-        mn1 = a
-        mn2 = b
-    } else if ((a <= c) && (c <= b)) {
-        mn1 = a
-        mn2 = c
-    } else if ((b <= c) && (c <= a)) {
-        mn1 = b
-        mn2 = c
-    } else if ((b <= a) && (a <= c)) {
-        mn1 = b
-        mn2 = a
-    } else if ((c <= a) && (a <= b)) {
-        mn1 = c
-        mn2 = a
-    } else {
-        mn1 = c
-        mn2 = b
-    }
+    val mas: Array<Int> = arrayOf(a, b, c)
+    mas.sort()
+    val mn1 = mas[0]
+    val mn2 = mas[1]
     return mn1 * mn2 <= r * s
 }
-

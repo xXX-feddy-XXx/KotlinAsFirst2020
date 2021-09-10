@@ -111,10 +111,10 @@ fun whichRookThreatens(
     rookX1: Int, rookY1: Int,
     rookX2: Int, rookY2: Int
 ): Int {
-    if (((kingX == rookX1) && (kingY == rookY2)) || ((kingX == rookX2) && (kingY == rookY1))) return (3)
-    else if ((kingX == rookX1) || (kingY == rookY1)) return (1)
-    else if ((kingX == rookX2) || (kingY == rookY2)) return (2)
-    return (0)
+    return if (((kingX == rookX1) && (kingY == rookY2)) || ((kingX == rookX2) && (kingY == rookY1))) (3)
+    else if ((kingX == rookX1) || (kingY == rookY1)) (1)
+    else if ((kingX == rookX2) || (kingY == rookY2)) (2)
+    else (0)
 }
 
 /**
@@ -152,42 +152,11 @@ fun rookOrBishopThreatens(
  */
 fun triangleKind(a: Double, b: Double, c: Double): Int {
     if ((c > a + b) || (a > c + b) || (b > a + c)) return (-1)
-    else {
-        if ((c > b) && (b >= a)) {
-            val sum = sqr(b) + sqr(a)
-            return if (sqr(c) == sum) (1)
-            else if (sqr(c) < sum) (0)
-            else (2)
-        }
-        if ((c > a) && (a >= b)) {
-            val sum = sqr(b) + sqr(a)
-            return if (sqr(c) == sum) (1)
-            else if (sqr(c) < sum) (0)
-            else (2)
-        }
-        if ((b > a) && (a >= c)) {
-            val sum = sqr(a) + sqr(c)
-            return if (sqr(b) == sum) (1)
-            else if (sqr(b) < sum) (0)
-            else (2)
-        }
-        if ((b > c) && (c >= a)) {
-            val sum = sqr(c) + sqr(a)
-            return if (sqr(b) == sum) (1)
-            else if (sqr(b) < sum) (0)
-            else (2)
-        }
-        if ((a > b) && (b >= c)) {
-            val sum = sqr(b) + sqr(c)
-            return if (sqr(a) == sum) (1)
-            else if (sqr(a) < sum) (0)
-            else (2)
-        }
-        val sum = sqr(c) + sqr(b)
-        return if (sqr(a) == sum) (1)
-        else if (sqr(a) < sum) (0)
-        else (2)
-    }
+    var mas: Array<Double> = arrayOf(a, b, c)
+    mas.sort()
+    return if (sqr(mas[2]) == sqr(mas[0]) + sqr(mas[1])) 1
+    else if (sqr(mas[2]) < sqr(mas[0]) + sqr(mas[1])) 0
+    else 2
 }
 
 /**
