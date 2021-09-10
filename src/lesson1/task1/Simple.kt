@@ -68,8 +68,7 @@ fun main() {
 fun seconds(hours: Int, minutes: Int, seconds: Int): Int {
     val ch = hours * 60 * 60
     val min = minutes * 60
-    val sum = ch + min + seconds
-    return (sum)
+    return ch + min + seconds
 }
 
 /**
@@ -160,5 +159,5 @@ fun accountInThreeYears(initial: Int, percent: Int): Double {
 fun numberRevert(number: Int): Int {
     val number: String = number.toString()
     val x: String = number.reversed()
-    return (x.toInt())
+    return x.toInt()
 }
