@@ -2,10 +2,7 @@
 
 package lesson3.task1
 
-import kotlin.math.max
-import kotlin.math.min
-import kotlin.math.pow
-import kotlin.math.sqrt
+import kotlin.math.*
 
 // Урок 3: циклы
 // Максимальное количество баллов = 9
@@ -76,8 +73,8 @@ fun digitCountInNumber(n: Int, m: Int): Int =
  * Использовать операции со строками в этой задаче запрещается.
  */
 fun digitNumber(n: Int): Int {
-    if (n / 10 == 0) return 1
-    var x = n
+    var x = abs(n)
+    if (x / 10 == 0) return 1
     var k = 0
     while (x > 0) {
         k++
@@ -280,7 +277,7 @@ fun sin(x: Double, eps: Double): Double {
     var s = x
     var flag = 0
     var d = 3
-    while (kotlin.math.abs(x.pow(d) / factorial(d)) < eps) {
+    while (abs(x.pow(d) / factorial(d)) < eps) {
         if (flag == 0) {
             s -= x.pow(d) / factorial(d)
             flag = 1
