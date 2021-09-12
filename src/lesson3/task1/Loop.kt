@@ -2,9 +2,6 @@
 
 package lesson3.task1
 
-import org.junit.Test
-import java.lang.Math.abs
-import java.lang.Math.pow
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.pow
@@ -315,7 +312,8 @@ fun cos(x: Double, eps: Double): Double = TODO()
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun col(n: Double): Int {
+fun col(n: Int): Int {
+    if (n / 10 == 0) return 1
     var s = n
     var k = 0
     while (s > 0) {
@@ -324,18 +322,19 @@ fun col(n: Double): Int {
     }
     return k
 }
+
 fun squareSequenceDigit(n: Int): Int {
     var s = 0
     var i = 1.0
     var box = 0
     var ch = 0.0
     while (s < n) {
-        s += col(i.pow(2.0))
-        box = col(i.pow(2.0))
+        s += col(i.pow(2.0).toInt())
+        box = col(i.pow(2.0).toInt())
         ch = i.pow(2.0)
         i += 1
     }
-    s -=
+    s -= box
     var gl: Int = ch.toInt()
     var mas = emptyArray<Int>()
     while (gl > 0) {
@@ -343,7 +342,7 @@ fun squareSequenceDigit(n: Int): Int {
         gl /= 10
     }
     mas.reverse()
-    return (mas[n - s + 1])
+    return (mas[n - s - 1])
 }
 
 /**
@@ -355,4 +354,27 @@ fun squareSequenceDigit(n: Int): Int {
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun fibSequenceDigit(n: Int): Int = TODO()
+fun fibSequenceDigit(n: Int): Int {
+    var s = 0
+    var pr = 0
+    var box: Int
+    var sled = 1
+    var dbl = 0
+    var cont = 0
+    while (s < n) {
+        s += col(sled)  // col - функция, которую я написал в предыдущем задании
+        dbl = col(sled)
+        cont = sled
+        box = sled
+        sled += pr
+        pr = box
+    }
+    s -= dbl
+    var mas = emptyArray<Int>()
+    while (cont > 0) {
+        mas += cont % 10
+        cont /= 10
+    }
+    mas.reverse()
+    return mas[n - s - 1]
+}
