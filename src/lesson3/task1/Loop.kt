@@ -2,6 +2,12 @@
 
 package lesson3.task1
 
+import org.junit.Test
+import java.lang.Math.abs
+import java.lang.Math.pow
+import kotlin.math.max
+import kotlin.math.min
+import kotlin.math.pow
 import kotlin.math.sqrt
 
 // Урок 3: циклы
@@ -72,7 +78,15 @@ fun digitCountInNumber(n: Int, m: Int): Int =
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun digitNumber(n: Int): Int = TODO()
+fun digitNumber(n: Int): Int {
+    var x = n
+    var col = 0
+    do {
+        col++
+        x /= 10
+    } while (x > 0)
+    return col
+}
 
 /**
  * Простая (2 балла)
@@ -80,21 +94,49 @@ fun digitNumber(n: Int): Int = TODO()
  * Найти число Фибоначчи из ряда 1, 1, 2, 3, 5, 8, 13, 21, ... с номером n.
  * Ряд Фибоначчи определён следующим образом: fib(1) = 1, fib(2) = 1, fib(n+2) = fib(n) + fib(n+1)
  */
-fun fib(n: Int): Int = TODO()
+fun fib(n: Int): Int {
+    var pred = 1
+    var sled = 1
+    var box: Int
+    var k = 2
+    if ((n == 1) || (n == 2)) return 1
+    while (k != n) {
+        k++
+        box = sled
+        sled += pred
+        pred = box
+    }
+    return sled
+}
 
 /**
  * Простая (2 балла)
  *
  * Для заданного числа n > 1 найти минимальный делитель, превышающий 1
  */
-fun minDivisor(n: Int): Int = TODO()
+fun minDivisor(n: Int): Int {
+    var d = 2
+    while (d * d <= n) {
+        if (n % d == 0) return d
+        d++
+    }
+    return if (n == d) d
+    else n
+}
 
 /**
  * Простая (2 балла)
  *
  * Для заданного числа n > 1 найти максимальный делитель, меньший n
  */
-fun maxDivisor(n: Int): Int = TODO()
+fun maxDivisor(n: Int): Int {
+    var d = 2
+    while (d * d <= n) {
+        if (n % d == 0) return n / d
+        d++
+    }
+    return 1
+}
 
 /**
  * Простая (2 балла)
@@ -112,7 +154,16 @@ fun maxDivisor(n: Int): Int = TODO()
  * Написать функцию, которая находит, сколько шагов требуется для
  * этого для какого-либо начального X > 0.
  */
-fun collatzSteps(x: Int): Int = TODO()
+fun collatzSteps(x: Int): Int {
+    var y = x
+    var col = 0
+    while (y != 1) {
+        col++
+        if (y % 2 == 0) y /= 2
+        else y = 3 * y + 1
+    }
+    return col
+}
 
 /**
  * Средняя (3 балла)
@@ -120,7 +171,17 @@ fun collatzSteps(x: Int): Int = TODO()
  * Для заданных чисел m и n найти наименьшее общее кратное, то есть,
  * минимальное число k, которое делится и на m и на n без остатка
  */
-fun lcm(m: Int, n: Int): Int = TODO()
+fun lcm(m: Int, n: Int): Int {
+    var d = 2
+    var k: Int
+    if (max(n, m) % min(n, m) == 0) return max(n, m)
+    while (n * m > d) {
+        k = min(n, m) * d
+        if ((k % m == 0) && (k % n == 0)) return k
+        else d++
+    }
+    return m * n
+}
 
 /**
  * Средняя (3 балла)
@@ -129,7 +190,15 @@ fun lcm(m: Int, n: Int): Int = TODO()
  * Взаимно простые числа не имеют общих делителей, кроме 1.
  * Например, 25 и 49 взаимно простые, а 6 и 8 -- нет.
  */
-fun isCoPrime(m: Int, n: Int): Boolean = TODO()
+fun isCoPrime(m: Int, n: Int): Boolean {
+    var d = 2
+    if (max(m, n) % min(m, n) == 0) return false
+    while (d * d <= min(m, n)) {
+        if ((min(m, n) % d == 0) && (max(m, n) % d == 0)) return false
+        d++
+    }
+    return true
+}
 
 /**
  * Средняя (3 балла)
@@ -138,7 +207,24 @@ fun isCoPrime(m: Int, n: Int): Boolean = TODO()
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun revert(n: Int): Int = TODO()
+fun revert(n: Int): Int {
+    if (n / 10 == 0) return n
+    var k = 0
+    var ch1 = n
+    var otv = 0
+    var d = 1
+    while (ch1 > 0) {
+        ch1 /= 10
+        k += 1
+    }
+    var p = n
+    for (i in 1..k) {
+        otv += p / (10.0.pow(k) / 10.0.pow(i)).toInt() * d
+        d *= 10
+        p %= (10.0.pow(k) / 10.0.pow(i)).toInt()
+    }
+    return otv
+}
 
 /**
  * Средняя (3 балла)
@@ -149,7 +235,20 @@ fun revert(n: Int): Int = TODO()
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun isPalindrome(n: Int): Boolean = TODO()
+fun isPalindrome(n: Int): Boolean {
+    if (n / 10 == 0) return true
+    var mas = emptyArray<Int>()
+    var ch = n
+    while (ch > 0) {
+        mas += ch % 10
+        ch /= 10
+    }
+    mas.reverse()
+    for (i in 0..(mas.size / 2)) {
+        if (mas[i] != mas[mas.size - 1 - i]) return false
+    }
+    return true
+}
 
 /**
  * Средняя (3 балла)
@@ -159,7 +258,15 @@ fun isPalindrome(n: Int): Boolean = TODO()
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun hasDifferentDigits(n: Int): Boolean = TODO()
+fun hasDifferentDigits(n: Int): Boolean {
+    if (n / 10 == 0) return false
+    var ch = n
+    while (ch > 0) {
+        if (ch % 10 != n % 10) return true
+        ch /= 10
+    }
+    return false
+}
 
 /**
  * Средняя (4 балла)
@@ -170,7 +277,23 @@ fun hasDifferentDigits(n: Int): Boolean = TODO()
  * Подумайте, как добиться более быстрой сходимости ряда при больших значениях x.
  * Использовать kotlin.math.sin и другие стандартные реализации функции синуса в этой задаче запрещается.
  */
-fun sin(x: Double, eps: Double): Double = TODO()
+fun sin(x: Double, eps: Double): Double {
+    var s = x
+    var flag = 0
+    var d = 3
+    while (kotlin.math.abs(x.pow(d) / factorial(d)) < eps) {
+        if (flag == 0) {
+            s -= x.pow(d) / factorial(d)
+            flag = 1
+            d += 2
+        } else if (flag == 1) {
+            s += x.pow(d) / factorial(d)
+            flag = 0
+            d += 2
+        }
+    }
+    return s
+}
 
 /**
  * Средняя (4 балла)
@@ -192,7 +315,36 @@ fun cos(x: Double, eps: Double): Double = TODO()
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun squareSequenceDigit(n: Int): Int = TODO()
+fun col(n: Double): Int {
+    var s = n
+    var k = 0
+    while (s > 0) {
+        k++
+        s /= 10
+    }
+    return k
+}
+fun squareSequenceDigit(n: Int): Int {
+    var s = 0
+    var i = 1.0
+    var box = 0
+    var ch = 0.0
+    while (s < n) {
+        s += col(i.pow(2.0))
+        box = col(i.pow(2.0))
+        ch = i.pow(2.0)
+        i += 1
+    }
+    s -=
+    var gl: Int = ch.toInt()
+    var mas = emptyArray<Int>()
+    while (gl > 0) {
+        mas += gl % 10
+        gl /= 10
+    }
+    mas.reverse()
+    return (mas[n - s + 1])
+}
 
 /**
  * Сложная (5 баллов)
