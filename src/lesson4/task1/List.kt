@@ -3,7 +3,9 @@
 package lesson4.task1
 
 import lesson1.task1.discriminant
+import lesson1.task1.sqr
 import kotlin.math.sqrt
+import kotlin.math.*
 
 // Урок 4: списки
 // Максимальное количество баллов = 12
@@ -120,14 +122,30 @@ fun buildSumExample(list: List<Int>) = list.joinToString(separator = " + ", post
  * по формуле abs = sqrt(a1^2 + a2^2 + ... + aN^2).
  * Модуль пустого вектора считать равным 0.0.
  */
-fun abs(v: List<Double>): Double = TODO()
+fun abs(v: List<Double>): Double {
+    if (v.isEmpty()) return 0.0
+    var s = 0.0
+    for (i in v.indices) {
+        s += sqr(v[i])
+    }
+    return sqrt(s)
+}
 
 /**
  * Простая (2 балла)
  *
  * Рассчитать среднее арифметическое элементов списка list. Вернуть 0.0, если список пуст
  */
-fun mean(list: List<Double>): Double = TODO()
+fun mean(list: List<Double>): Double {
+    if (list.isEmpty()) return 0.0
+    var s = 0.0
+    var k = 0
+    for (i in list.indices) {
+        k++
+        s += list[i]
+    }
+    return (s / k)
+}
 
 /**
  * Средняя (3 балла)
@@ -137,7 +155,19 @@ fun mean(list: List<Double>): Double = TODO()
  *
  * Обратите внимание, что данная функция должна изменять содержание списка list, а не его копии.
  */
-fun center(list: MutableList<Double>): MutableList<Double> = TODO()
+fun center(list: MutableList<Double>): MutableList<Double> {
+    if (list.isEmpty()) return list
+    var s = 0.0
+    var k = 0
+    for (i in list.indices) {
+        k++
+        s += list[i]
+    }
+    for (i in list.indices) {
+        list[i] -= s / k
+    }
+    return list
+}
 
 /**
  * Средняя (3 балла)
@@ -146,7 +176,14 @@ fun center(list: MutableList<Double>): MutableList<Double> = TODO()
  * представленные в виде списков a и b. Скалярное произведение считать по формуле:
  * C = a1b1 + a2b2 + ... + aNbN. Произведение пустых векторов считать равным 0.
  */
-fun times(a: List<Int>, b: List<Int>): Int = TODO()
+fun times(a: List<Int>, b: List<Int>): Int {
+    if (a.isEmpty() || b.isEmpty()) return 0
+    var s = 0
+    for (i in a.indices) {
+        s += a[i] * b[i]
+    }
+    return s
+}
 
 /**
  * Средняя (3 балла)
@@ -156,7 +193,16 @@ fun times(a: List<Int>, b: List<Int>): Int = TODO()
  * Коэффициенты многочлена заданы списком p: (p0, p1, p2, p3, ..., pN).
  * Значение пустого многочлена равно 0 при любом x.
  */
-fun polynom(p: List<Int>, x: Int): Int = TODO()
+fun polynom(p: List<Int>, x: Int): Int {
+    if (p.isEmpty()) return 0
+    var y = x
+    var s = p[0]
+    for (i in 1 until p.size) {
+        s += p[i] * y
+        y *= x // у меня почему-то здесь .pow не работал, пришлось так сделать
+    }
+    return s
+}
 
 /**
  * Средняя (3 балла)
@@ -168,7 +214,17 @@ fun polynom(p: List<Int>, x: Int): Int = TODO()
  *
  * Обратите внимание, что данная функция должна изменять содержание списка list, а не его копии.
  */
-fun accumulate(list: MutableList<Int>): MutableList<Int> = TODO()
+fun accumulate(list: MutableList<Int>): MutableList<Int> {
+    if (list.isEmpty()) return list
+    var s = 1
+    var box: Int
+    for (i in 1 until list.size) {
+        box = list[i]
+        list[i] += s
+        s += box
+    }
+    return list
+}
 
 /**
  * Средняя (3 балла)
@@ -177,7 +233,30 @@ fun accumulate(list: MutableList<Int>): MutableList<Int> = TODO()
  * Результат разложения вернуть в виде списка множителей, например 75 -> (3, 5, 5).
  * Множители в списке должны располагаться по возрастанию.
  */
-fun factorize(n: Int): List<Int> = TODO()
+fun pr(n: Int): Boolean {
+    var d = 2
+    while (d * d <= n) {
+        if (n % d == 0) return false
+        d++
+    }
+    return true
+}
+fun factorize(n: Int): List<Int> {
+    if (pr(n)) return listOf(n)
+    var mas = emptyList<Int>()
+    var d = 2
+    var p = n
+    while (d <= p) {
+        if (p % d == 0) {
+            if (pr(d)) mas += d
+            p /= d
+            d = 2
+        }
+        d++
+    }
+    mas.sorted()
+    return mas
+}
 
 /**
  * Сложная (4 балла)
@@ -186,7 +265,22 @@ fun factorize(n: Int): List<Int> = TODO()
  * Результат разложения вернуть в виде строки, например 75 -> 3*5*5
  * Множители в результирующей строке должны располагаться по возрастанию.
  */
-fun factorizeToString(n: Int): String = TODO()
+fun factorizeToString(n: Int): String {
+    if (pr(n)) return "$n"
+    var mas = emptyList<Int>()
+    var d = 2
+    var p = n
+    while (d <= p) {
+        if (p % d == 0) {
+            if (pr(d)) mas += d
+            p /= d
+            d = 2
+        }
+        d++
+    }
+    mas.sorted()
+    return mas.joinToString(separator = "*")
+}
 
 /**
  * Средняя (3 балла)
