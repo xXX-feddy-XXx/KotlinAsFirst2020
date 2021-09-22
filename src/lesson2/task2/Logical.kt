@@ -84,6 +84,8 @@ fun brickPasses(a: Int, b: Int, c: Int, r: Int, s: Int): Boolean {
         sides += 1
     } else if (s >= b) {
         sides += 1
+    } else if (s >= c) {
+        sides += 1
     }
     return sides >= 2
 }

@@ -75,7 +75,7 @@ fun digitCountInNumber(n: Int, m: Int): Int =
 fun digitNumber(n: Int): Int {
     var N = n
     var num = 1
-    while (N / 10 > 0) {
+    while (N / 10 != 0) {
         N /= 10
         num += 1
     }
@@ -89,7 +89,18 @@ fun digitNumber(n: Int): Int {
  * Найти число Фибоначчи из ряда 1, 1, 2, 3, 5, 8, 13, 21, ... с номером n.
  * Ряд Фибоначчи определён следующим образом: fib(1) = 1, fib(2) = 1, fib(n+2) = fib(n) + fib(n+1)
  */
-fun fib(n: Int): Int = TODO()
+fun fib(n: Int): Int {
+    var arr = emptyArray<Int>()
+    arr += 0
+    arr += 1
+    arr += 1
+    for (i in 3..n) {
+        arr += arr[i - 1] + arr[i - 2]
+
+    }
+    return arr[n]
+
+}
 
 /**
  * Простая (2 балла)
@@ -201,7 +212,24 @@ fun cos(x: Double, eps: Double): Double = TODO()
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun squareSequenceDigit(n: Int): Int = TODO()
+fun squareSequenceDigit(n: Int): Int {
+    var arr = arrayOf<Int>(1, 4, 9)
+    var arr2 = emptyArray<Int>()
+    var num = 0
+    for (i in 4..n) {
+        num += i * i
+        while (num / 10 != 0 || num % 10 != 0) {
+            arr2 += num % 10
+            num /= 10
+        }
+        arr2.reverse()
+        arr += arr2
+        arr2 = emptyArray()
+        num = 0
+
+    }
+    return arr[n - 1]
+}
 
 /**
  * Сложная (5 баллов)
@@ -212,4 +240,23 @@ fun squareSequenceDigit(n: Int): Int = TODO()
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun fibSequenceDigit(n: Int): Int = TODO()
+fun fibSequenceDigit(n: Int): Int {
+    var arr3 = arrayOf<Int>(1, 1, 1)
+    var arr = arrayOf<Int>(1, 1, 1)
+    var arr2 = emptyArray<Int>()
+    var num = 0
+    for (i in 3..n) {
+        arr += arr[i - 1] + arr[i - 2]
+    };for (i in 3..n) {
+        num = arr[i]
+        while (num / 10 != 0 || num % 10 != 0) {
+            arr2 += num % 10
+            num /= 10
+        }
+        arr2.reverse()
+        arr3 += arr2
+        arr2 = emptyArray()
+        num = 0
+    }
+    return arr3[n]
+}

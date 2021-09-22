@@ -69,7 +69,7 @@ fun minBiRoot(a: Double, b: Double, c: Double): Double {
  * вернуть строку вида: «21 год», «32 года», «12 лет».
  */
 fun ageDescription(age: Int): String {
-    if (age % 10 >= 5 || age % 100 == 11 || age % 100 == 12) {
+    if (age % 10 >= 5 || age % 100 == 11 || age % 100 == 12 || age % 10 == 0) {
         return "$age лет"
     } else if (age % 10 == 1) {
         return "$age год"
@@ -96,14 +96,14 @@ fun timeForHalfWay(
     if (path - t1 * v1 > 0) {
         path -= t1 * v1
         time += t1
-    } else if (path.toInt() == 0) {
+    } else if (path == 0.0) {
         return t1
     } else if (path - t1 * v1 < 0) {
         return path / v1
     };if (path - t2 * v2 > 0) {
         path -= t2 * v2
         time += t2
-    } else if (path.toInt() == 0) {
+    } else if (path == 0.0) {
         return time
     } else if (path - t2 * v2 < 0) {
         return path / v2 + time
@@ -161,9 +161,9 @@ fun rookOrBishopThreatens(
  * Если такой треугольник не существует, вернуть -1.
  */
 fun triangleKind(a: Double, b: Double, c: Double): Int {
-    var A = acos((b * b + c * c - a * a) / (2 * b * c)) * 180 / PI
-    var C = acos((b * b + a * a - c * c) / (2 * a * b)) * 180 / PI
-    var B = 180 - A - C
+    val A = acos((b * b + c * c - a * a) / (2 * b * c)) * 180 / PI
+    val C = acos((b * b + a * a - c * c) / (2 * a * b)) * 180 / PI
+    val B = 180 - A - C
     if (A > 90 || B > 90 || C > 90) {
         return 2
     } else if (A == 90.0 || B == 90.0 || C == 90.0) {
