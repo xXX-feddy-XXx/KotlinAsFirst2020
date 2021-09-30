@@ -288,7 +288,7 @@ fun sin(x: Double, eps: Double): Double {
             d += 2
         }
     }
-    return s
+    return s //
 }
 
 /**
