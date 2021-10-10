@@ -46,7 +46,6 @@ fun daysInMonth(month: Int, year: Int): Int {
         return 28
     else
         30
-
 }
 
 
@@ -72,20 +71,9 @@ fun circleInside(
  * Вернуть true, если кирпич пройдёт
  */
 fun brickPasses(a: Int, b: Int, c: Int, r: Int, s: Int): Boolean {
-    var sides = 0
-    if (r >= a) {
-        sides += 1
-    } else if (r >= b) {
-        sides += 1
-    } else if (r >= c) {
-        sides += 1
-    }
-    if (s >= a) {
-        sides += 1
-    } else if (s >= b) {
-        sides += 1
-    } else if (s >= c) {
-        sides += 1
-    }
-    return sides >= 2
+    return if (a <= r && (b <= s || c <= s)) {
+        true
+    } else if (b <= r && (a <= s || c <= s)) {
+        true
+    } else c <= r && (b <= s || a <= s)
 }

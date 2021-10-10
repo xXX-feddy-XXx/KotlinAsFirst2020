@@ -213,22 +213,20 @@ fun cos(x: Double, eps: Double): Double = TODO()
  * Использовать операции со строками в этой задаче запрещается.
  */
 fun squareSequenceDigit(n: Int): Int {
-    var arr = arrayOf<Int>(1, 4, 9)
-    var arr2 = emptyArray<Int>()
+    var col = 0
     var num = 0
-    for (i in 4..n) {
-        num += i * i
-        while (num / 10 != 0 || num % 10 != 0) {
-            arr2 += num % 10
-            num /= 10
-        }
-        arr2.reverse()
-        arr += arr2
-        arr2 = emptyArray()
-        num = 0
+    var sqr = 0
+    while (col < n) {
+        num++
+        sqr = num * num
+        col += digitNumber(sqr)
 
     }
-    return arr[n - 1]
+    while (col > n) {
+        col--
+        sqr /= 10
+    }
+    return sqr % 10
 }
 
 /**
@@ -260,3 +258,4 @@ fun fibSequenceDigit(n: Int): Int {
     }
     return arr3[n]
 }
+
