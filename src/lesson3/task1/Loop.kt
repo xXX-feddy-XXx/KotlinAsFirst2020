@@ -90,17 +90,18 @@ fun digitNumber(n: Int): Int {
  * Ряд Фибоначчи определён следующим образом: fib(1) = 1, fib(2) = 1, fib(n+2) = fib(n) + fib(n+1)
  */
 fun fib(n: Int): Int {
-    var arr = emptyArray<Int>()
-    arr += 0
-    arr += 1
-    arr += 1
+    var num1 = 1
+    var num2 = 1
+    var numx = 0
     for (i in 3..n) {
-        arr += arr[i - 1] + arr[i - 2]
+        numx = num2
+        num2 += num1
+        num1 = numx
 
     }
-    return arr[n]
-
+    return num2
 }
+
 
 /**
  * Простая (2 балла)
@@ -239,23 +240,27 @@ fun squareSequenceDigit(n: Int): Int {
  * Использовать операции со строками в этой задаче запрещается.
  */
 fun fibSequenceDigit(n: Int): Int {
-    var arr3 = arrayOf<Int>(1, 1, 1)
-    var arr = arrayOf<Int>(1, 1, 1)
-    var arr2 = emptyArray<Int>()
+    var col = 0
     var num = 0
-    for (i in 3..n) {
-        arr += arr[i - 1] + arr[i - 2]
-    };for (i in 3..n) {
-        num = arr[i]
-        while (num / 10 != 0 || num % 10 != 0) {
-            arr2 += num % 10
-            num /= 10
-        }
-        arr2.reverse()
-        arr3 += arr2
-        arr2 = emptyArray()
-        num = 0
+    var fib = 0
+    while (col < n) {
+        num++
+        fib = fib(num)
+        col += digitNumber(fib)
+
     }
-    return arr3[n]
+    while (col > n) {
+        col--
+        fib /= 10
+    }
+    return fib % 10
 }
+
+
+
+
+
+
+
+
 
