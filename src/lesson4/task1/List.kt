@@ -4,8 +4,9 @@ package lesson4.task1
 
 import lesson1.task1.discriminant
 import lesson1.task1.sqr
+import lesson3.task1.digitNumber
 import kotlin.math.sqrt
-import kotlin.math.*
+import kotlin.math.pow
 
 // Урок 4: списки
 // Максимальное количество баллов = 12
@@ -241,6 +242,7 @@ fun pr(n: Int): Boolean {
     }
     return true
 }
+
 fun factorize(n: Int): List<Int> {
     if (pr(n)) return listOf(n)
     var mas = emptyList<Int>()
@@ -278,6 +280,7 @@ fun factorizeToString(n: Int): String {
         }
         d++
     }
+    if (mas.isEmpty()) return "$n"
     mas.sorted()
     return mas.joinToString(separator = "*")
 }
@@ -289,7 +292,16 @@ fun factorizeToString(n: Int): String {
  * Результат перевода вернуть в виде списка цифр в base-ичной системе от старшей к младшей,
  * например: n = 100, base = 4 -> (1, 2, 1, 0) или n = 250, base = 14 -> (1, 3, 12)
  */
-fun convert(n: Int, base: Int): List<Int> = TODO()
+fun convert(n: Int, base: Int): List<Int> {
+    if (n < base) return listOf(n)
+    var mas = emptyList<Int>()
+    var ch = n
+    while (ch > 0) {
+        mas += ch % base
+        ch /= base
+    }
+    return mas.reversed()
+}
 
 /**
  * Сложная (4 балла)
@@ -302,7 +314,22 @@ fun convert(n: Int, base: Int): List<Int> = TODO()
  * Использовать функции стандартной библиотеки, напрямую и полностью решающие данную задачу
  * (например, n.toString(base) и подобные), запрещается.
  */
-fun convertToString(n: Int, base: Int): String = TODO()
+fun convertToString(n: Int, base: Int): String {
+    if ((n < base) && (base <= 10)) return "$n"
+    var mas = emptyList<String>()
+    var ch = n
+    var p: Int
+    while (ch > 0) {
+        p = ch % base
+        mas += if (p >= 10) {
+            (p + 55).toChar().toString()
+        } else "$p"
+        ch /= base
+    }
+    mas = mas.reversed()
+    val otv = mas.joinToString(separator = "")
+    return otv.toLowerCase()
+}
 
 /**
  * Средняя (3 балла)
@@ -311,7 +338,15 @@ fun convertToString(n: Int, base: Int): String = TODO()
  * из системы счисления с основанием base в десятичную.
  * Например: digits = (1, 3, 12), base = 14 -> 250
  */
-fun decimal(digits: List<Int>, base: Int): Int = TODO()
+fun decimal(digits: List<Int>, base: Int): Int {
+    var k = digits.size - 1
+    var s = 0
+    for (i in digits.indices) {
+        s += (digits[i] * base.toDouble().pow(k)).toInt()
+        k--
+    }
+    return s
+}
 
 /**
  * Сложная (4 балла)
@@ -325,7 +360,22 @@ fun decimal(digits: List<Int>, base: Int): Int = TODO()
  * Использовать функции стандартной библиотеки, напрямую и полностью решающие данную задачу
  * (например, str.toInt(base)), запрещается.
  */
-fun decimalFromString(str: String, base: Int): Int = TODO()
+fun decimalFromString(str: String, base: Int): Int {
+    var mas: MutableList<Int> = mutableListOf()
+    for (i in str.indices) {
+        if (str[i].toChar().toInt() in 97..122) mas.add(
+            str[i].toChar().toInt() - 87
+        )
+        else mas.add(str[i].toString().toInt())
+    }
+    var k = mas.size - 1
+    var s = 0
+    for (i in mas.indices) {
+        s += (mas[i] * base.toDouble().pow(k)).toInt()
+        k--
+    }
+    return s
+}
 
 /**
  * Сложная (5 баллов)
@@ -335,7 +385,67 @@ fun decimalFromString(str: String, base: Int): Int = TODO()
  * 90 = XC, 100 = C, 400 = CD, 500 = D, 900 = CM, 1000 = M.
  * Например: 23 = XXIII, 44 = XLIV, 100 = C
  */
-fun roman(n: Int): String = TODO()
+fun col(n: Int): Int {
+    var k = 0
+    var x = n
+    while (x > 0) {
+        k++
+        x /= 10
+    }
+    return k
+}
+
+fun ch(n: Int, s: String): String {
+    if (n == 0) return ""
+    var otv = ""
+    for (i in 1..n) {
+        otv += s
+    }
+    return otv
+}
+
+fun ed(n: Int): String {
+    return if (n <= 3) ch(n, "I")
+    else if (n == 4) "I" + "V"
+    else if ((n >= 5) && (n <= 8)) "V" + ch(n - 5, "I")
+    else "I" + "X"
+}
+
+fun des(n: Int): String {
+    return if (n <= 3) ch(n, "X")
+    else if (n == 4) "XL"
+    else if ((n >= 5) && (n <= 8)) "L" + ch(n - 5, "X")
+    else "XC"
+}
+
+fun sot(n: Int): String {
+    return if (n <= 3) ch(n, "C")
+    else if (n == 4) "CD"
+    else if ((n >= 5) && (n <= 8)) "D" + ch(n - 5, "C")
+    else "CM"
+}
+
+fun roman(n: Int): String {
+    var otv = ""
+    var k = col(n)
+    return when (k) {
+        1 -> ed(n % 10)
+        2 -> des(n / 10 % 10) + ed(n % 10)
+        3 -> sot(n / 100) + des(n / 10 % 10) + ed(n % 10)
+        else -> {
+            var p = n
+            while (col(p) > 3) {
+                p -= 1000
+                otv += "M"
+            }
+            k = col(p)
+            return if (p == 0) otv
+            else if (k == 1) otv + ed(n % 10)
+            else if (k == 2) otv + des(n / 10 % 10) + ed(n % 10)
+            else otv + sot(n / 100) + des(n / 10 % 10) + ed(n % 10)
+        }
+    }
+}
 
 /**
  * Очень сложная (7 баллов)
@@ -344,4 +454,145 @@ fun roman(n: Int): String = TODO()
  * Например, 375 = "триста семьдесят пять",
  * 23964 = "двадцать три тысячи девятьсот шестьдесят четыре"
  */
-fun russian(n: Int): String = TODO()
+fun un(n: Int): String {
+    when (n) {
+        1 -> return "один"
+        2 -> return "два"
+        3 -> return "три"
+        4 -> return "четыре"
+        5 -> return "пять"
+        6 -> return "шесть"
+        7 -> return "семь"
+        8 -> return "восемь"
+        9 -> return "девять"
+    }
+    return ""
+}
+
+fun un2(n: Int): String {
+    when (n) {
+        1 -> return "одна тысяча"
+        2 -> return "две тысячи"
+        3 -> return "три тысячи"
+        4 -> return "четыре тысячи"
+        5 -> return "пять тысяч"
+        6 -> return "шесть тысяч"
+        7 -> return "семь тысяч"
+        8 -> return "восемь тысяч"
+        9 -> return "девять тысяч"
+    }
+    return ""
+}
+
+fun hun(n: Int): String {
+    var mas: MutableList<Int> = mutableListOf()
+    var k = digitNumber(n)
+    val ch = n.toString()
+    for (i in 0 until k) {
+        mas += ch[i].digitToInt()
+    }
+    var otv = ""
+    var flag = 0
+    for (i in 0 until digitNumber(n)) {
+        when (k) {
+            3 -> if (mas[i] == 0) break
+            else {
+                otv += if (mas[i] == 1) "сто"
+                else if (mas[i] == 2) "двести"
+                else if ((mas[i] > 2) && (mas[i] <= 4)) (un(mas[i]) + "ста")
+                else un(mas[i]) + "сот"
+            }
+            2 -> if (mas[i] != 0) {
+                if (mas[i] == 1) {
+                    when (mas[i + 1]) {
+                        0 -> otv += "десять"
+                        1 -> otv += "одиннадцать"
+                        2 -> otv += "двенадцать"
+                        3 -> otv += "тринадцать"
+                        4 -> otv += "четырнадцать"
+                        5 -> otv += "пятнадцать"
+                        6 -> otv += "шестнадцать"
+                        7 -> otv += "семнадцать"
+                        8 -> otv += "восемнадцать"
+                        9 -> otv += "девятнадцать"
+                    }
+                    otv += " "
+                    break
+                } else {
+                    otv += if ((mas[i] >= 2) && (mas[i] <= 3)) un(mas[i]) + "дцать"
+                    else if (mas[i] == 4) "сорок"
+                    else if (mas[i] == 9) "девяносто"
+                    else un(mas[i]) + "десят"
+                }
+            } else flag = 1
+            1 -> if (mas[i] == 0) break
+            else otv += un(mas[i])
+        }
+        if (flag == 0) otv += " "
+        else flag = 0
+        k--
+    }
+    return otv.dropLast(1)
+}
+
+fun th(n: Int): String {
+    var mas: MutableList<Int> = mutableListOf()
+    var k = digitNumber(n)
+    val ch = n.toString()
+    for (i in 0 until k) {
+        mas += ch[i].digitToInt()
+    }
+    var otv = ""
+    var flag = 0
+    for (i in 0 until digitNumber(n)) {
+        when (k) {
+            3 -> if (mas[i] == 0) break
+            else {
+                otv += if (mas[i] == 1) "сто"
+                else if (mas[i] == 2) "двести"
+                else if ((mas[i] > 2) && (mas[i] <= 4)) (un(mas[i]) + "ста")
+                else un(mas[i]) + "сот"
+            }
+            2 -> if (mas[i] != 0) {
+                if (mas[i] == 1) {
+                    when (mas[i + 1]) {
+                        0 -> otv += "десять"
+                        1 -> otv += "одиннадцать"
+                        2 -> otv += "двенадцать"
+                        3 -> otv += "тринадцать"
+                        4 -> otv += "четырнадцать"
+                        5 -> otv += "пятнадцать"
+                        6 -> otv += "шестнадцать"
+                        7 -> otv += "семнадцать"
+                        8 -> otv += "восемнадцать"
+                        9 -> otv += "девятнадцать"
+                    }
+                    otv += " " + "тысяч" + " "
+                    break
+                } else {
+                    otv += if ((mas[i] >= 2) && (mas[i] <= 3)) un(mas[i]) + "дцать"
+                    else if (mas[i] == 4) "сорок"
+                    else if (mas[i] == 9) "девяносто"
+                    else un(mas[i]) + "десят"
+                }
+            } else flag = 1
+            1 -> otv += if (mas[i] == 0) "тысяч"
+            else un2(mas[i])
+        }
+        if (flag == 0) otv += " "
+        else flag = 0
+        k--
+    }
+    return otv
+}
+
+fun russian(n: Int): String {
+    if (n == 0) return "ноль"
+    val x = n % 1000
+    val y = n / 1000
+    return if (y > 0) {
+        if (x > 0) th(y) + hun(x)
+        else (th(y) + hun(x)).dropLast(1)
+    } else hun(x)
+}
+

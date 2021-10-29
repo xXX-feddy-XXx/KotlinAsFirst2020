@@ -1,4 +1,4 @@
-@file:Suppress("UNUSED_PARAMETER")
+ @file:Suppress("UNUSED_PARAMETER")
 
 package lesson3.task1
 
@@ -166,14 +166,21 @@ fun collatzSteps(x: Int): Int {
  * Для заданных чисел m и n найти наименьшее общее кратное, то есть,
  * минимальное число k, которое делится и на m и на n без остатка
  */
-fun lcm(m: Int, n: Int): Int {
+fun pr(n: Int): Boolean {
     var d = 2
-    var k: Int
-    if (max(n, m) % min(n, m) == 0) return max(n, m)
-    while (n * m > d) {
-        k = min(n, m) * d
-        if ((k % m == 0) && (k % n == 0)) return k
-        else d++
+    while (d * d <= n) {
+        if (n % d == 0) return false
+        d++
+    }
+    return true
+}
+fun lcm(m: Int, n: Int): Int {
+    if (max(m, n) % min(m, n) == 0) return max(m, n)
+    if (pr(m) || (pr(n))) return m * n
+    var d = min(m, n) - 1
+    while (d > 1) {
+        if ((n % d == 0) && (m % d == 0)) return m * n / d
+        d--
     }
     return m * n
 }
@@ -209,10 +216,7 @@ fun revert(n: Int): Int {
     var ch1 = n
     var otv = 0
     var d = 1
-    while (ch1 > 0) {
-        ch1 /= 10
-        k += 1
-    }
+    k = digitNumber(n)
     var p = n
     for (i in 1..k) {
         otv += p / (10.0.pow(k) / 10.0.pow(i)).toInt() * d
@@ -273,23 +277,7 @@ fun hasDifferentDigits(n: Int): Boolean {
  * Подумайте, как добиться более быстрой сходимости ряда при больших значениях x.
  * Использовать kotlin.math.sin и другие стандартные реализации функции синуса в этой задаче запрещается.
  */
-fun sin(x: Double, eps: Double): Double {
-    var s = x
-    var flag = 0
-    var d = 3
-    while (abs(x.pow(d) / factorial(d)) < eps) {
-        if (flag == 0) {
-            s -= x.pow(d) / factorial(d)
-            flag = 1
-            d += 2
-        } else if (flag == 1) {
-            s += x.pow(d) / factorial(d)
-            flag = 0
-            d += 2
-        }
-    }
-    return s
-}
+fun sin(x: Double, eps: Double): Double = TODO()
 
 /**
  * Средняя (4 балла)
@@ -311,16 +299,6 @@ fun cos(x: Double, eps: Double): Double = TODO()
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun col(n: Int): Int {
-    if (n / 10 == 0) return 1
-    var s = n
-    var k = 0
-    while (s > 0) {
-        k++
-        s /= 10
-    }
-    return k
-}
 
 fun squareSequenceDigit(n: Int): Int {
     var s = 0
@@ -328,13 +306,13 @@ fun squareSequenceDigit(n: Int): Int {
     var box = 0
     var ch = 0.0
     while (s < n) {
-        s += col(i.pow(2.0).toInt())
-        box = col(i.pow(2.0).toInt())
+        s += digitNumber(i.pow(2.0).toInt())
+        box = digitNumber(i.pow(2.0).toInt())
         ch = i.pow(2.0)
         i += 1
     }
     s -= box
-    var gl: Int = ch.toInt()
+    var gl = ch.toInt()
     var mas = emptyArray<Int>()
     while (gl > 0) {
         mas += gl % 10
@@ -361,8 +339,8 @@ fun fibSequenceDigit(n: Int): Int {
     var dbl = 0
     var cont = 0
     while (s < n) {
-        s += col(sled)  // col - функция, которую я написал в предыдущем задании
-        dbl = col(sled)
+        s += digitNumber(sled)  // col - функция, которую я написал в предыдущем задании
+        dbl = digitNumber(sled)
         cont = sled
         box = sled
         sled += pr

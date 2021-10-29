@@ -110,12 +110,10 @@ fun whichRookThreatens(
     kingX: Int, kingY: Int,
     rookX1: Int, rookY1: Int,
     rookX2: Int, rookY2: Int
-): Int {
-    return if (((kingX == rookX1) && (kingY == rookY2)) || ((kingX == rookX2) && (kingY == rookY1))) (3)
-    else if ((kingX == rookX1) || (kingY == rookY1)) (1)
-    else if ((kingX == rookX2) || (kingY == rookY2)) (2)
-    else (0)
-}
+): Int = if (((kingX == rookX1) && (kingY == rookY2)) || ((kingX == rookX2) && (kingY == rookY1))) (3)
+else if ((kingX == rookX1) || (kingY == rookY1)) (1)
+else if ((kingX == rookX2) || (kingY == rookY2)) (2)
+else (0)
 
 /**
  * Простая (2 балла)
@@ -132,14 +130,10 @@ fun rookOrBishopThreatens(
     rookX: Int, rookY: Int,
     bishopX: Int, bishopY: Int
 ): Int {
-    if (((kingX == rookX) || (kingY == rookY)) && (abs(bishopX - kingX) == abs(bishopY - kingY))) return (3)
-    else {
-        if ((kingX == rookX) || (kingY == rookY)) return (1)
-        else {
-            if (abs(bishopX - kingX) == abs(bishopY - kingY)) return (2)
-            return (0)
-        }
-    }
+    return if (((kingX == rookX) || (kingY == rookY)) && (abs(bishopX - kingX) == abs(bishopY - kingY))) (3)
+    else if ((kingX == rookX) || (kingY == rookY)) (1)
+    else if (abs(bishopX - kingX) == abs(bishopY - kingY)) (2)
+    else (0)
 }
 
 /**
@@ -152,7 +146,7 @@ fun rookOrBishopThreatens(
  */
 fun triangleKind(a: Double, b: Double, c: Double): Int {
     if ((c > a + b) || (a > c + b) || (b > a + c)) return (-1)
-    var mas: Array<Double> = arrayOf(a, b, c)
+    var mas = arrayOf(a, b, c)
     mas.sort()
     return if (sqr(mas[2]) == sqr(mas[0]) + sqr(mas[1])) 1
     else if (sqr(mas[2]) < sqr(mas[0]) + sqr(mas[1])) 0

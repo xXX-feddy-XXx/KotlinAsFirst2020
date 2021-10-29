@@ -83,7 +83,7 @@ fun lengthInMeters(sagenes: Int, arshins: Int, vershoks: Int): Double {
     val ars = arshins * 16 * 4.445
     val ver = vershoks * 4.445
     val sumcm = sag + ars + ver
-    return (sumcm / 100)
+    return sumcm / 100
 }
 
 /**
@@ -97,7 +97,7 @@ fun angleInRadian(deg: Int, min: Int, sec: Int): Double {
     val min: Double = min.toDouble()
     val sec: Double = sec.toDouble()
     val x: Double = deg + (min + sec / 60) / 60
-    return (x * PI / 180)
+    return x * PI / 180
 }
 
 /**
@@ -109,7 +109,7 @@ fun angleInRadian(deg: Int, min: Int, sec: Int): Double {
 fun trackLength(x1: Double, y1: Double, x2: Double, y2: Double): Double {
     val rx = abs(x1 - x2)
     val ry = abs(y1 - y2)
-    return (sqrt(sqr(rx) + sqr(ry)))
+    return sqrt(sqr(rx) + sqr(ry))
 }
 
 /**
@@ -121,7 +121,7 @@ fun trackLength(x1: Double, y1: Double, x2: Double, y2: Double): Double {
 fun thirdDigit(number: Int): Int {
     val number: String = number.toString()
     val x: Int = number[number.count() - 3].digitToInt()
-    return (x)
+    return x
 }
 
 /**
@@ -134,7 +134,7 @@ fun thirdDigit(number: Int): Int {
 fun travelMinutes(hoursDepart: Int, minutesDepart: Int, hoursArrive: Int, minutesArrive: Int): Int {
     val summ1: Int = hoursDepart * 60 + minutesDepart
     val summ2: Int = hoursArrive * 60 + minutesArrive
-    return (summ2 - summ1)
+    return summ2 - summ1
 }
 
 /**
@@ -147,7 +147,7 @@ fun travelMinutes(hoursDepart: Int, minutesDepart: Int, hoursArrive: Int, minute
 fun accountInThreeYears(initial: Int, percent: Int): Double {
     val s: Double = initial.toDouble()
     val p: Double = percent.toDouble()
-    return (((s * (1 + (p / 100))) * (1 + p / 100)) * (1 + p / 100))
+    return ((s * (1 + (p / 100))) * (1 + p / 100)) * (1 + p / 100)
 }
 
 /**
