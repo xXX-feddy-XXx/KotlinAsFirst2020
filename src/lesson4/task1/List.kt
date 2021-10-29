@@ -277,7 +277,7 @@ fun factorizeToString(n: Int): String {
         if (p % d == 0) {
             if (pr(d)) mas += d
             p /= d
-            d = 2
+            d = 1
         }
         d++
     }
