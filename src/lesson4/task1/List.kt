@@ -217,7 +217,7 @@ fun polynom(p: List<Int>, x: Int): Int {
  */
 fun accumulate(list: MutableList<Int>): MutableList<Int> {
     if (list.isEmpty()) return list
-    var s = 1
+    var s = list[0]
     var box: Int
     for (i in 1 until list.size) {
         box = list[i]
@@ -235,6 +235,7 @@ fun accumulate(list: MutableList<Int>): MutableList<Int> {
  * Множители в списке должны располагаться по возрастанию.
  */
 fun pr(n: Int): Boolean {
+    if (n == 2) return true
     var d = 2
     while (d * d <= n) {
         if (n % d == 0) return false
@@ -252,7 +253,7 @@ fun factorize(n: Int): List<Int> {
         if (p % d == 0) {
             if (pr(d)) mas += d
             p /= d
-            d = 2
+            d = 1
         }
         d++
     }
@@ -315,6 +316,7 @@ fun convert(n: Int, base: Int): List<Int> {
  * (например, n.toString(base) и подобные), запрещается.
  */
 fun convertToString(n: Int, base: Int): String {
+    if (n == 0) return "0"
     if ((n < base) && (base <= 10)) return "$n"
     var mas = emptyList<String>()
     var ch = n
