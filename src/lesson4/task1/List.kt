@@ -441,10 +441,12 @@ fun roman(n: Int): String {
                 otv += "M"
             }
             k = col(p)
-            return if (p == 0) otv
-            else if (k == 1) otv + ed(n % 10)
-            else if (k == 2) otv + des(n / 10 % 10) + ed(n % 10)
-            else otv + sot(n / 100) + des(n / 10 % 10) + ed(n % 10)
+            return when (k) {
+                0 -> otv
+                1 -> otv + ed(p % 10)
+                2 -> otv + des(p / 10 % 10) + ed(p % 10)
+                else -> otv + sot(p / 100) + des(p / 10 % 10) + ed(p % 10)
+            }
         }
     }
 }
