@@ -2,7 +2,10 @@
 
 package lesson4.task1
 
+import kotlinx.html.I
 import lesson1.task1.discriminant
+import lesson3.task1.digitNumber
+import lesson6.task1.firstDuplicateIndex
 import java.util.*
 import kotlin.math.pow
 import kotlin.math.sqrt
@@ -192,6 +195,8 @@ fun polynom(p: List<Int>, x: Int): Int {
     }
 }
 
+// = p.sumOf { it * x.toDouble().pow(p.indexOf(it)) }.toInt()
+
 /**
  * Средняя (3 балла)
  *
@@ -224,12 +229,15 @@ fun accumulate(list: MutableList<Int>): MutableList<Int> {
  * Множители в списке должны располагаться по возрастанию.
  */
 fun factorize(n: Int): List<Int> {
-    var n = n
+    var num = n
+    var div = 1
     val list = mutableListOf<Int>()
-    for (i in 2 until n + 1) {
-        while (n % i == 0) {
-            n /= i
-            list.add(i)
+    for (i in 1 until num) {
+        div += 1
+        while (num % div == 0) {
+            num /= div
+            list.add(div)
+
         }
     }
     return list
@@ -242,7 +250,8 @@ fun factorize(n: Int): List<Int> {
  * Результат разложения вернуть в виде строки, например 75 -> 3*5*5
  * Множители в результирующей строке должны располагаться по возрастанию.
  */
-fun factorizeToString(n: Int): String = TODO()
+fun factorizeToString(n: Int): String = factorize(n).joinToString(separator = "*")
+
 
 /**
  * Средняя (3 балла)
@@ -255,10 +264,14 @@ fun convert(n: Int, base: Int): List<Int> {
     var n = n
     var remainder = 0
     val list = mutableListOf<Int>()
-    while (n > 0) {
-        list.add(n % base)
-        n /= base
-    }
+    if (n == 0)
+        list.add(0)
+    else
+        while (n > 0) {
+            list.add(n % base)
+            n /= base
+        }
+
     return list.reversed()
 
 }
@@ -274,7 +287,15 @@ fun convert(n: Int, base: Int): List<Int> {
  * Использовать функции стандартной библиотеки, напрямую и полностью решающие данную задачу
  * (например, n.toString(base) и подобные), запрещается.
  */
-fun convertToString(n: Int, base: Int): String = TODO()
+fun convertToString(n: Int, base: Int): String {
+    val list = convert(n, base)
+    var string = ""
+    val str = "0123456789abcdefghijklmnopqrstuvwxyz"
+    for (element in list) {
+        string += str[element]
+    }
+    return string
+}
 
 /**
  * Средняя (3 балла)
@@ -304,7 +325,14 @@ fun decimal(digits: List<Int>, base: Int): Int {
  * Использовать функции стандартной библиотеки, напрямую и полностью решающие данную задачу
  * (например, str.toInt(base)), запрещается.
  */
-fun decimalFromString(str: String, base: Int): Int = TODO()
+fun decimalFromString(str: String, base: Int): Int {
+    val string = "0123456789abcdefghijklmnopqrstuvwxyz"
+    val list = mutableListOf<Int>()
+    for (char in str) {
+        list.add(string.indexOf(char))
+    }
+    return decimal(list, base)
+}
 
 /**
  * Сложная (5 баллов)
@@ -314,7 +342,35 @@ fun decimalFromString(str: String, base: Int): Int = TODO()
  * 90 = XC, 100 = C, 400 = CD, 500 = D, 900 = CM, 1000 = M.
  * Например: 23 = XXIII, 44 = XLIV, 100 = C
  */
-fun roman(n: Int): String = TODO()
+fun roman(n: Int): String {
+    val listOfLetters = listOf<String>(
+        "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX",
+        "X", "XX", "XXX", "XL", "L", "LX", "LXX", "LXXX", "XC",
+        "C", "CC", "CCC", "CD", "D", "DC", "DCC", "DCCC", "CM",
+        "M", "MM", "MMM", "MMMM", "MMMMM", "MMMMMM", "MMMMMMM", "MMMMMMMM", "MMMMMMMMM",
+    )
+    val listOfNumbers = listOf<Int>(
+        1, 2, 3, 4, 5, 6, 7, 8, 9,
+        10, 20, 30, 40, 50, 60, 70, 80, 90,
+        100, 200, 300, 400, 500, 600, 700, 800, 900,
+        1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000,
+    )
+
+    var number = n
+    var firstNum = 0
+    val amount = n.toString().length
+    var string = ""
+    for (i in amount downTo 0) {
+        firstNum = (number / 10.0.pow(i).toInt()) * (10.0.pow(i)).toInt()
+        number %= 10.0.pow(i).toInt()
+        if (firstNum > 0) {
+            string += listOfLetters[listOfNumbers.indexOf(firstNum)]
+        }
+    }
+    return string
+}
+
+// max = 9999 MMMMMMMMMCMXCIX
 
 /**
  * Очень сложная (7 баллов)
@@ -324,3 +380,6 @@ fun roman(n: Int): String = TODO()
  * 23964 = "двадцать три тысячи девятьсот шестьдесят четыре"
  */
 fun russian(n: Int): String = TODO()
+
+
+
