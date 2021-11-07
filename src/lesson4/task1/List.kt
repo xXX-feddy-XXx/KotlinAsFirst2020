@@ -133,7 +133,7 @@ fun abs(v: List<Double>): Double = sqrt(v.sumOf { it * it })
  *
  * Рассчитать среднее арифметическое элементов списка list. Вернуть 0.0, если список пуст
  */
-fun mean(list: List<Double>): Double = if (list.isNotEmpty()) (list.sum()) / list.size else 0.0
+fun mean(list: List<Double>): Double = if (list.isNotEmpty()) list.sum() / list.size else 0.0
 
 
 /**
@@ -145,15 +145,10 @@ fun mean(list: List<Double>): Double = if (list.isNotEmpty()) (list.sum()) / lis
  * Обратите внимание, что данная функция должна изменять содержание списка list, а не его копии.
  */
 fun center(list: MutableList<Double>): MutableList<Double> {
-    return when {
-        list.isEmpty() -> list
-        else -> {
-            val arithmeticMean = mean(list)
-            for (i in 0 until list.size)
-                list[i] -= arithmeticMean
-            list
-        }
-    }
+    val arithmeticMean = mean(list)
+    for (i in 0 until list.size)
+        list[i] -= arithmeticMean
+    return list
 }
 
 /**
@@ -164,15 +159,11 @@ fun center(list: MutableList<Double>): MutableList<Double> {
  * C = a1b1 + a2b2 + ... + aNbN. Произведение пустых векторов считать равным 0.
  */
 fun times(a: List<Int>, b: List<Int>): Int {
-    return when {
-        a.isEmpty() && b.isEmpty() -> 0
-        else -> {
-            var c = 0
-            for (i in a.indices)
-                c += a[i] * b[i]
-            c
-        }
-    }
+    var c = 0
+    for (i in a.indices)
+        c += a[i] * b[i]
+    return c
+
 }
 
 /**
@@ -183,19 +174,8 @@ fun times(a: List<Int>, b: List<Int>): Int {
  * Коэффициенты многочлена заданы списком p: (p0, p1, p2, p3, ..., pN).
  * Значение пустого многочлена равно 0 при любом x.
  */
-fun polynom(p: List<Int>, x: Int): Int {
-    return when {
-        p.isEmpty() -> 0
-        else -> {
-            var px = 0.0
-            for (i in p.indices)
-                px += p[i] * x.toDouble().pow(i)
-            px.toInt()
-        }
-    }
-}
+fun polynom(p: List<Int>, x: Int): Int = p.sumOf { it * x.toDouble().pow(p.indexOf(it)) }.toInt()
 
-// = p.sumOf { it * x.toDouble().pow(p.indexOf(it)) }.toInt()
 
 /**
  * Средняя (3 балла)
@@ -208,17 +188,13 @@ fun polynom(p: List<Int>, x: Int): Int {
  * Обратите внимание, что данная функция должна изменять содержание списка list, а не его копии.
  */
 fun accumulate(list: MutableList<Int>): MutableList<Int> {
-    return when {
-        list.isEmpty() -> list
-        else -> {
-            var previousElement = list[0]
-            for (i in 1 until list.size) {
-                list[i] += previousElement
-                previousElement = list[i]
-            }
-            list
-        }
+    var previousElement = list[0]
+    for (i in 1 until list.size) {
+        list[i] += previousElement
+        previousElement = list[i]
     }
+    return list
+
 }
 
 /**
@@ -230,14 +206,11 @@ fun accumulate(list: MutableList<Int>): MutableList<Int> {
  */
 fun factorize(n: Int): List<Int> {
     var num = n
-    var div = 1
     val list = mutableListOf<Int>()
     for (i in 1 until num) {
-        div += 1
-        while (num % div == 0) {
-            num /= div
-            list.add(div)
-
+        while (num % (i + 1) == 0) {
+            num /= (i + 1)
+            list.add(i + 1)
         }
     }
     return list
@@ -264,16 +237,11 @@ fun convert(n: Int, base: Int): List<Int> {
     var n = n
     var remainder = 0
     val list = mutableListOf<Int>()
-    if (n == 0)
-        list.add(0)
-    else
-        while (n > 0) {
-            list.add(n % base)
-            n /= base
-        }
-
+    while (n > 0) {
+        list.add(n % base)
+        n /= base
+    }
     return list.reversed()
-
 }
 
 /**
@@ -306,10 +274,9 @@ fun convertToString(n: Int, base: Int): String {
  */
 fun decimal(digits: List<Int>, base: Int): Int {
     var n = 0.0
-    for (i in digits.indices) {
-        n += digits.reversed()[i] * base.toDouble().pow(i)
-
-    }
+    val dig = digits.reversed()
+    for (i in digits.indices)
+        n += dig[i] * base.toDouble().pow(i)
     return n.toInt()
 }
 
@@ -347,13 +314,13 @@ fun roman(n: Int): String {
         "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX",
         "X", "XX", "XXX", "XL", "L", "LX", "LXX", "LXXX", "XC",
         "C", "CC", "CCC", "CD", "D", "DC", "DCC", "DCCC", "CM",
-        "M", "MM", "MMM", "MMMM", "MMMMM", "MMMMMM", "MMMMMMM", "MMMMMMMM", "MMMMMMMMM",
+        "M"
     )
     val listOfNumbers = listOf<Int>(
         1, 2, 3, 4, 5, 6, 7, 8, 9,
         10, 20, 30, 40, 50, 60, 70, 80, 90,
         100, 200, 300, 400, 500, 600, 700, 800, 900,
-        1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000,
+        1000
     )
 
     var number = n
@@ -363,14 +330,16 @@ fun roman(n: Int): String {
     for (i in amount downTo 0) {
         firstNum = (number / 10.0.pow(i).toInt()) * (10.0.pow(i)).toInt()
         number %= 10.0.pow(i).toInt()
+        while (firstNum > 1000) {
+            string += "M"
+            firstNum -= 1000
+        }
         if (firstNum > 0) {
             string += listOfLetters[listOfNumbers.indexOf(firstNum)]
         }
     }
     return string
 }
-
-// max = 9999 MMMMMMMMMCMXCIX
 
 /**
  * Очень сложная (7 баллов)
@@ -380,6 +349,3 @@ fun roman(n: Int): String {
  * 23964 = "двадцать три тысячи девятьсот шестьдесят четыре"
  */
 fun russian(n: Int): String = TODO()
-
-
-
