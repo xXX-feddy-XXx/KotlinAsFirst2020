@@ -136,6 +136,7 @@ class Tests {
     @Test
     @Tag("3")
     fun polynom() {
+        assertEquals(14000, polynom(listOf(-1000, -1000), -15))
         assertEquals(0, polynom(listOf(), 1000))
         assertEquals(42, polynom(listOf(42), -1000))
         assertEquals(13, polynom(listOf(3, 2), 5))

@@ -174,7 +174,13 @@ fun times(a: List<Int>, b: List<Int>): Int {
  * Коэффициенты многочлена заданы списком p: (p0, p1, p2, p3, ..., pN).
  * Значение пустого многочлена равно 0 при любом x.
  */
-fun polynom(p: List<Int>, x: Int): Int = p.sumOf { it * x.toDouble().pow(p.indexOf(it)) }.toInt()
+fun polynom(p: List<Int>, x: Int): Int {
+    var pol = 0
+    for (i in p.indices) {
+        pol += p[i] * x.toDouble().pow(i).toInt()
+    }
+    return pol
+}
 
 
 /**
