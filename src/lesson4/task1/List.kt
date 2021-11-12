@@ -231,7 +231,7 @@ fun factorize(n: Int): List<Int> {
  * Результат разложения вернуть в виде строки, например 75 -> 3*5*5
  * Множители в результирующей строке должны располагаться по возрастанию.
  */
-fun factorizeToString(n: Int): String = factorize(n).joinToString(separator = "*")
+fun factorizeToString(n: Int): String = TODO()
 
 
 /**
@@ -302,15 +302,7 @@ fun decimal(digits: List<Int>, base: Int): Int {
  * Использовать функции стандартной библиотеки, напрямую и полностью решающие данную задачу
  * (например, str.toInt(base)), запрещается.
  */
-fun decimalFromString(str: String, base: Int): Int {
-    val string = "01234567ab89cdefghijklmnopqrstuvwxyz"
-    val list = mutableListOf<Int>()
-    for (char in str) {
-        list.add(string.indexOf(char))
-    }
-    return decimal(list, base)
-}
-// pofiksit
+fun decimalFromString(str: String, base: Int): Int = TODO()
 /**
  * Сложная (5 баллов)
  *
