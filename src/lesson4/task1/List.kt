@@ -175,9 +175,11 @@ fun times(a: List<Int>, b: List<Int>): Int {
  * Значение пустого многочлена равно 0 при любом x.
  */
 fun polynom(p: List<Int>, x: Int): Int {
+    var xstep = 1
     var pol = 0
     for (i in p.indices) {
-        pol += p[i] * x.toDouble().pow(i).toInt()
+        pol += p[i] * xstep
+        xstep *= x
     }
     return pol
 }
@@ -194,17 +196,14 @@ fun polynom(p: List<Int>, x: Int): Int {
  * Обратите внимание, что данная функция должна изменять содержание списка list, а не его копии.
  */
 fun accumulate(list: MutableList<Int>): MutableList<Int> {
-    return if (list.isEmpty())
-        list
-    else {
-        var previousElement = list[0]
-        for (i in 1 until list.size) {
-            list[i] += previousElement
-            previousElement = list[i]
-        }
-        list
+    var previousElement = 0
+    for (i in 0 until list.size) {
+        list[i] += previousElement
+        previousElement = list[i]
     }
+    return list
 }
+
 
 /**
  * Средняя (3 балла)
@@ -216,10 +215,10 @@ fun accumulate(list: MutableList<Int>): MutableList<Int> {
 fun factorize(n: Int): List<Int> {
     var num = n
     val list = mutableListOf<Int>()
-    for (i in 1 until num) {
-        while (num % (i + 1) == 0) {
-            num /= (i + 1)
-            list.add(i + 1)
+    for (i in 2 until num + 1) {
+        while (num % (i) == 0) {
+            num /= (i)
+            list.add(i)
         }
     }
     return list
@@ -282,9 +281,12 @@ fun convertToString(n: Int, base: Int): String {
  */
 fun decimal(digits: List<Int>, base: Int): Int {
     var n = 0.0
+    var basepow = 1
     val dig = digits.reversed()
-    for (i in digits.indices)
-        n += dig[i] * base.toDouble().pow(i)
+    for (i in digits.indices) {
+        n += dig[i] * basepow
+        basepow *= base
+    }
     return n.toInt()
 }
 
@@ -301,14 +303,14 @@ fun decimal(digits: List<Int>, base: Int): Int {
  * (например, str.toInt(base)), запрещается.
  */
 fun decimalFromString(str: String, base: Int): Int {
-    val string = "0123456789abcdefghijklmnopqrstuvwxyz"
+    val string = "01234567ab89cdefghijklmnopqrstuvwxyz"
     val list = mutableListOf<Int>()
     for (char in str) {
         list.add(string.indexOf(char))
     }
     return decimal(list, base)
 }
-
+// pofiksit
 /**
  * Сложная (5 баллов)
  *
@@ -348,6 +350,8 @@ fun roman(n: Int): String {
     }
     return string
 }
+
+// pofiksit
 
 /**
  * Очень сложная (7 баллов)

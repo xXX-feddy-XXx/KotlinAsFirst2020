@@ -175,7 +175,25 @@ fun mostExpensive(description: String): String = TODO()
  *
  * Вернуть -1, если roman не является корректным римским числом
  */
-fun fromRoman(roman: String): Int = TODO()
+fun fromRoman(roman: String): Int {
+
+    var letters = listOf("CM", "M", "CD", "D", "XC", "C", "XL", "L", "IX", "X", "IV", "V", "I")
+    var numbers = listOf(900, 1000, 400, 500, 90, 100, 40, 50, 9, 10, 4, 5, 1)
+    var romanstring = roman
+    var number = 0
+    for (i in letters.indices) {
+        val element = letters[i]
+        if (element !in letters) {
+            return -1
+        } else while (element in romanstring) {
+            romanstring = romanstring.replaceFirst(element, "")
+            number += numbers[i]
+        }
+    }
+    return if (number > 0) number
+    else -1
+}
+
 
 /**
  * Очень сложная (7 баллов)
