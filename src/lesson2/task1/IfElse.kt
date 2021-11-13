@@ -71,9 +71,9 @@ fun minBiRoot(a: Double, b: Double, c: Double): Double {
  * вернуть строку вида: «21 год», «32 года», «12 лет».
  */
 fun ageDescription(age: Int): String =
-    if ((age % 100) in 10..20) ("$age лет")
-    else if (((age % 10) in 5..9) || ((age % 10) == 0)) ("$age лет")
-    else if ((age % 10) == 1) ("$age год")
+    if ((age % 100) in 10..20) "$age лет"
+    else if (((age % 10) in 5..9) || ((age % 10) == 0)) "$age лет"
+    else if ((age % 10) == 1) "$age год"
     else "$age года"
 
 
@@ -129,12 +129,11 @@ fun rookOrBishopThreatens(
     kingX: Int, kingY: Int,
     rookX: Int, rookY: Int,
     bishopX: Int, bishopY: Int
-): Int {
-    return if (((kingX == rookX) || (kingY == rookY)) && (abs(bishopX - kingX) == abs(bishopY - kingY))) (3)
-    else if ((kingX == rookX) || (kingY == rookY)) (1)
-    else if (abs(bishopX - kingX) == abs(bishopY - kingY)) (2)
-    else (0)
-}
+) = if (((kingX == rookX) || (kingY == rookY)) && (abs(bishopX - kingX) == abs(bishopY - kingY))) 3
+else if ((kingX == rookX) || (kingY == rookY)) 1
+else if (abs(bishopX - kingX) == abs(bishopY - kingY)) 2
+else 0
+
 
 /**
  * Простая (2 балла)
@@ -163,11 +162,13 @@ fun triangleKind(a: Double, b: Double, c: Double): Int {
  */
 fun segmentLength(a: Int, b: Int, c: Int, d: Int): Int {
     if ((c > b) || (d < a)) return (-1)
-    else if (d >= b) {
-        return if (c >= a) (b - c)
-        else (b - a)
+    val otv = if (d >= b) when {
+        a <= c -> b - c
+        else -> b - a
+    } else {
+        if (a <= c) d - c
+        else d - a
     }
-    return if (c <= a) (d - a)
-    else (d - c)
+    return otv
 }
 

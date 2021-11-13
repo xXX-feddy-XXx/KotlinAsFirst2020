@@ -93,10 +93,10 @@ fun lengthInMeters(sagenes: Int, arshins: Int, vershoks: Int): Double {
  * Вывести значение того же угла в радианах (например, 0.63256).
  */
 fun angleInRadian(deg: Int, min: Int, sec: Int): Double {
-    val deg: Double = deg.toDouble()
-    val min: Double = min.toDouble()
-    val sec: Double = sec.toDouble()
-    val x: Double = deg + (min + sec / 60) / 60
+    val deg = deg.toDouble()
+    val min = min.toDouble()
+    val sec = sec.toDouble()
+    val x = deg + (min + sec / 60) / 60
     return x * PI / 180
 }
 
