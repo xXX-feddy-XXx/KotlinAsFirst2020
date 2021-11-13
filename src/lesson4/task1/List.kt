@@ -303,6 +303,7 @@ fun decimal(digits: List<Int>, base: Int): Int {
  * (например, str.toInt(base)), запрещается.
  */
 fun decimalFromString(str: String, base: Int): Int = TODO()
+//ноу тайм ту фикс, соре
 /**
  * Сложная (5 баллов)
  *
@@ -326,12 +327,13 @@ fun roman(n: Int): String {
     )
 
     var number = n
-    var firstNum = 0
     val amount = n.toString().length
     var string = ""
+    var pow = 10.0.pow(amount).toInt()
     for (i in amount downTo 0) {
-        firstNum = (number / 10.0.pow(i).toInt()) * (10.0.pow(i)).toInt()
-        number %= 10.0.pow(i).toInt()
+        var firstNum = (number / pow) * pow
+        number %= pow
+        pow /= 10
         while (firstNum > 1000) {
             string += "M"
             firstNum -= 1000
