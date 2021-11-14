@@ -2,6 +2,10 @@
 
 package lesson5.task1
 
+import java.lang.Integer.min
+import kotlin.math.max
+
+
 // Урок 5: ассоциативные массивы и множества
 // Максимальное количество баллов = 14
 // Рекомендуемое количество баллов = 9
@@ -96,7 +100,20 @@ fun buildWordSet(text: List<String>): MutableSet<String> {
  *   buildGrades(mapOf("Марат" to 3, "Семён" to 5, "Михаил" to 5))
  *     -> mapOf(5 to listOf("Семён", "Михаил"), 3 to listOf("Марат"))
  */
-fun buildGrades(grades: Map<String, Int>): Map<Int, List<String>> = TODO()
+fun buildGrades(grades: Map<String, Int>): Map<Int, List<String>> {
+    val otv = mutableMapOf<Int, MutableList<String>>()
+    for ((stu, mark) in grades) {
+        if (mark in otv) {
+            val g = otv.getValue(mark)
+            if (stu !in g) {
+                g.add(stu)
+            }
+        } else {
+            otv[mark] = mutableListOf(stu)
+        }
+    }
+    return otv
+}
 
 /**
  * Простая (2 балла)
@@ -108,7 +125,12 @@ fun buildGrades(grades: Map<String, Int>): Map<Int, List<String>> = TODO()
  *   containsIn(mapOf("a" to "z"), mapOf("a" to "z", "b" to "sweet")) -> true
  *   containsIn(mapOf("a" to "z"), mapOf("a" to "zee", "b" to "sweet")) -> false
  */
-fun containsIn(a: Map<String, String>, b: Map<String, String>): Boolean = TODO()
+fun containsIn(a: Map<String, String>, b: Map<String, String>): Boolean {
+    for ((key, value) in a) {
+        if ((key !in b) || (b.getValue(key) !in a.getValue(key))) return false
+    }
+    return true
+}
 
 /**
  * Простая (2 балла)
@@ -125,7 +147,11 @@ fun containsIn(a: Map<String, String>, b: Map<String, String>): Boolean = TODO()
  *     -> a changes to mutableMapOf() aka becomes empty
  */
 fun subtractOf(a: MutableMap<String, String>, b: Map<String, String>) {
-    TODO()
+    for ((key, value) in b) {
+        if (key in a) {
+            if (b.getValue(key) == a.getValue(key)) a.remove(key)
+        }
+    }
 }
 
 /**
@@ -135,7 +161,22 @@ fun subtractOf(a: MutableMap<String, String>, b: Map<String, String>) {
  * В выходном списке не должно быть повторяющихся элементов,
  * т. е. whoAreInBoth(listOf("Марат", "Семён, "Марат"), listOf("Марат", "Марат")) == listOf("Марат")
  */
-fun whoAreInBoth(a: List<String>, b: List<String>): List<String> = TODO()
+fun whoAreInBoth(a: List<String>, b: List<String>): List<String> {
+    var mas = listOf<String>()
+    var mx: List<String>
+    var mn: List<String>
+    if (a.size >= b.size) {
+        mx = a
+        mn = b
+    } else {
+        mx = b
+        mn = a
+    }
+    for (i in 0 until min(a.size, b.size)) {
+        if (mn[i] in mx) mas += mn[i]
+    }
+    return mas
+}
 
 /**
  * Средняя (3 балла)
@@ -154,7 +195,18 @@ fun whoAreInBoth(a: List<String>, b: List<String>): List<String> = TODO()
  *     mapOf("Emergency" to "911", "Police" to "02")
  *   ) -> mapOf("Emergency" to "112, 911", "Police" to "02")
  */
-fun mergePhoneBooks(mapA: Map<String, String>, mapB: Map<String, String>): Map<String, String> = TODO()
+fun mergePhoneBooks(mapA: Map<String, String>, mapB: Map<String, String>): Map<String, String> {
+    var mp = mutableMapOf<String, String>()
+    for ((key, value) in mapA) {
+        mp[key] = mapA.getValue(key)
+        if ((key in mapB) && (mapA[key] != mapB[key]))
+            mp[key] += "," + " " + mapB.getValue(key)
+    }
+    for ((key, value) in mapB) {
+        if (key !in mp) mp[key] = mapB.getValue(key)
+    }
+    return mp.toMap()
+}
 
 /**
  * Средняя (4 балла)
@@ -162,11 +214,36 @@ fun mergePhoneBooks(mapA: Map<String, String>, mapB: Map<String, String>): Map<S
  * Для заданного списка пар "акция"-"стоимость" вернуть ассоциативный массив,
  * содержащий для каждой акции ее усредненную стоимость.
  *
- * Например:
+ * Например
  *   averageStockPrice(listOf("MSFT" to 100.0, "MSFT" to 200.0, "NFLX" to 40.0))
  *     -> mapOf("MSFT" to 150.0, "NFLX" to 40.0)
  */
-fun averageStockPrice(stockPrices: List<Pair<String, Double>>): Map<String, Double> = TODO()
+fun averageStockPrice(stockPrices: List<Pair<String, Double>>): Map<String, Double> {
+    if (stockPrices.isEmpty()) return mapOf()
+    val mp = mutableMapOf<String, Double>()
+    var aver = mutableListOf<Double>()
+    var flag = 0
+    for (i in 0..stockPrices.size - 2) {
+        if (stockPrices[i].first == stockPrices[i + 1].first) {
+            aver += stockPrices[i].second
+            flag = 1
+        } else {
+            if (flag == 1) {
+                aver += stockPrices[i].second
+                mp[stockPrices[i].first] = aver.average()
+                flag = 0
+                aver.clear()
+            } else {
+                mp[stockPrices[i].first] = stockPrices[i].second
+            }
+        }
+    }
+    if (flag == 1) {
+        aver += stockPrices[stockPrices.size - 1].second
+        mp[stockPrices[stockPrices.size - 1].first] = aver.average()
+    } else mp[stockPrices[stockPrices.size - 1].first] = stockPrices[stockPrices.size - 1].second
+    return mp.toMap()
+}
 
 /**
  * Средняя (4 балла)
