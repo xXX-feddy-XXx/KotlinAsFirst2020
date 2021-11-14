@@ -216,8 +216,8 @@ fun factorize(n: Int): List<Int> {
     var num = n
     val list = mutableListOf<Int>()
     for (i in 2 until num + 1) {
-        while (num % (i) == 0) {
-            num /= (i)
+        while (num % i == 0) {
+            num /= i
             list.add(i)
         }
     }
@@ -303,7 +303,7 @@ fun decimal(digits: List<Int>, base: Int): Int {
  * (например, str.toInt(base)), запрещается.
  */
 fun decimalFromString(str: String, base: Int): Int = TODO()
-//ноу тайм ту фикс, соре
+
 /**
  * Сложная (5 баллов)
  *

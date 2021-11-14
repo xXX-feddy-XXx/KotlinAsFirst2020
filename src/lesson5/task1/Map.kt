@@ -217,11 +217,9 @@ fun extractRepeats(list: List<String>): Map<String, Int> {
         } else
             map[i] = 1
     }
-    for ((key, value) in map) {
-        if (value <= 1)
-            del.add(key)
-    }
-    return map - del
+    val answer = map.filter { (key, value) -> value!! > 2 }
+
+return answer
 }
 
 /**
@@ -292,13 +290,13 @@ fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<Stri
  *   findSumOfTwo(listOf(1, 2, 3), 6) -> Pair(-1, -1)
  */
 fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
-    val Map = mutableMapOf<Int, Int>()
+    val map = mutableMapOf<Int, Int>()
     for (i in list.indices) {
         val diff = number - list[i]
-        if (diff in Map) {
-            return Map.getValue(diff) to i
+        if (diff in map) {
+            return map[diff]!! to i
         } else
-            Map[list[i]] = i
+            map[list[i]] = i
     }
     return -1 to -1
 }
