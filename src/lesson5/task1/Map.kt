@@ -217,7 +217,7 @@ fun extractRepeats(list: List<String>): Map<String, Int> {
         } else
             map[i] = 1
     }
-    val answer = map.filter { (key, value) -> value!! > 2 }
+    val answer = map.filter { (key, value) -> value!! >= 2 }
 
 return answer
 }
