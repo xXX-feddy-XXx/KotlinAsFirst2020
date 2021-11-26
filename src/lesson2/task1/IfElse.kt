@@ -71,9 +71,9 @@ fun minBiRoot(a: Double, b: Double, c: Double): Double {
  * вернуть строку вида: «21 год», «32 года», «12 лет».
  */
 fun ageDescription(age: Int): String =
-    if ((age % 100) in 10..20) ("$age лет")
-    else if (((age % 10) in 5..9) || ((age % 10) == 0)) ("$age лет")
-    else if ((age % 10) == 1) ("$age год")
+    if ((age % 100) in 10..20) "$age лет"
+    else if (((age % 10) in 5..9) || ((age % 10) == 0)) "$age лет"
+    else if ((age % 10) == 1) "$age год"
     else "$age года"
 
 
@@ -110,12 +110,10 @@ fun whichRookThreatens(
     kingX: Int, kingY: Int,
     rookX1: Int, rookY1: Int,
     rookX2: Int, rookY2: Int
-): Int {
-    return if (((kingX == rookX1) && (kingY == rookY2)) || ((kingX == rookX2) && (kingY == rookY1))) (3)
-    else if ((kingX == rookX1) || (kingY == rookY1)) (1)
-    else if ((kingX == rookX2) || (kingY == rookY2)) (2)
-    else (0)
-}
+): Int = if (((kingX == rookX1) && (kingY == rookY2)) || ((kingX == rookX2) && (kingY == rookY1))) (3)
+else if ((kingX == rookX1) || (kingY == rookY1)) (1)
+else if ((kingX == rookX2) || (kingY == rookY2)) (2)
+else (0)
 
 /**
  * Простая (2 балла)
@@ -131,16 +129,11 @@ fun rookOrBishopThreatens(
     kingX: Int, kingY: Int,
     rookX: Int, rookY: Int,
     bishopX: Int, bishopY: Int
-): Int {
-    if (((kingX == rookX) || (kingY == rookY)) && (abs(bishopX - kingX) == abs(bishopY - kingY))) return (3)
-    else {
-        if ((kingX == rookX) || (kingY == rookY)) return (1)
-        else {
-            if (abs(bishopX - kingX) == abs(bishopY - kingY)) return (2)
-            return (0)
-        }
-    }
-}
+) = if (((kingX == rookX) || (kingY == rookY)) && (abs(bishopX - kingX) == abs(bishopY - kingY))) 3
+else if ((kingX == rookX) || (kingY == rookY)) 1
+else if (abs(bishopX - kingX) == abs(bishopY - kingY)) 2
+else 0
+
 
 /**
  * Простая (2 балла)
@@ -152,7 +145,7 @@ fun rookOrBishopThreatens(
  */
 fun triangleKind(a: Double, b: Double, c: Double): Int {
     if ((c > a + b) || (a > c + b) || (b > a + c)) return (-1)
-    var mas: Array<Double> = arrayOf(a, b, c)
+    var mas = arrayOf(a, b, c)
     mas.sort()
     return if (sqr(mas[2]) == sqr(mas[0]) + sqr(mas[1])) 1
     else if (sqr(mas[2]) < sqr(mas[0]) + sqr(mas[1])) 0
@@ -169,11 +162,13 @@ fun triangleKind(a: Double, b: Double, c: Double): Int {
  */
 fun segmentLength(a: Int, b: Int, c: Int, d: Int): Int {
     if ((c > b) || (d < a)) return (-1)
-    else if (d >= b) {
-        return if (c >= a) (b - c)
-        else (b - a)
+    val otv = if (d >= b) when {
+        a <= c -> b - c
+        else -> b - a
+    } else {
+        if (a <= c) d - c
+        else d - a
     }
-    return if (c <= a) (d - a)
-    else (d - c)
+    return otv
 }
 

@@ -1,7 +1,8 @@
-@file:Suppress("UNUSED_PARAMETER")
+ @file:Suppress("UNUSED_PARAMETER")
 
 package lesson3.task1
 
+import lesson1.task1.sqr
 import kotlin.math.*
 
 // Урок 3: циклы
@@ -115,8 +116,7 @@ fun minDivisor(n: Int): Int {
         if (n % d == 0) return d
         d++
     }
-    return if (n == d) d
-    else n
+    return n
 }
 
 /**
@@ -166,17 +166,19 @@ fun collatzSteps(x: Int): Int {
  * Для заданных чисел m и n найти наименьшее общее кратное, то есть,
  * минимальное число k, которое делится и на m и на n без остатка
  */
-fun lcm(m: Int, n: Int): Int {
-    var d = 2
-    var k: Int
-    if (max(n, m) % min(n, m) == 0) return max(n, m)
-    while (n * m > d) {
-        k = min(n, m) * d
-        if ((k % m == 0) && (k % n == 0)) return k
-        else d++
+fun nod(m: Int, n: Int): Int {
+    var x = m
+    var y = n
+    while (max(x, y) % min(x, y) != 0) {
+        when {
+            x > y -> x = max(x, y) % min(x, y)
+            else -> y = max(x, y) % min(x, y)
+        }
     }
-    return m * n
+    return min(x, y)
 }
+
+fun lcm(m: Int, n: Int): Int = m * n / nod(m, n)
 
 /**
  * Средняя (3 балла)
@@ -185,16 +187,7 @@ fun lcm(m: Int, n: Int): Int {
  * Взаимно простые числа не имеют общих делителей, кроме 1.
  * Например, 25 и 49 взаимно простые, а 6 и 8 -- нет.
  */
-fun isCoPrime(m: Int, n: Int): Boolean {
-    if ((m == 1) || (n == 1)) return true
-    var d = 2
-    if (max(m, n) % min(m, n) == 0) return false
-    while (d * d <= min(m, n)) {
-        if ((min(m, n) % d == 0) && (max(m, n) % d == 0)) return false
-        d++
-    }
-    return true
-}
+fun isCoPrime(m: Int, n: Int): Boolean = nod(m, n) == 1
 
 /**
  * Средняя (3 балла)
@@ -209,10 +202,7 @@ fun revert(n: Int): Int {
     var ch1 = n
     var otv = 0
     var d = 1
-    while (ch1 > 0) {
-        ch1 /= 10
-        k += 1
-    }
+    k = digitNumber(n)
     var p = n
     for (i in 1..k) {
         otv += p / (10.0.pow(k) / 10.0.pow(i)).toInt() * d
@@ -273,23 +263,7 @@ fun hasDifferentDigits(n: Int): Boolean {
  * Подумайте, как добиться более быстрой сходимости ряда при больших значениях x.
  * Использовать kotlin.math.sin и другие стандартные реализации функции синуса в этой задаче запрещается.
  */
-fun sin(x: Double, eps: Double): Double {
-    var s = x
-    var flag = 0
-    var d = 3
-    while (abs(x.pow(d) / factorial(d)) < eps) {
-        if (flag == 0) {
-            s -= x.pow(d) / factorial(d)
-            flag = 1
-            d += 2
-        } else if (flag == 1) {
-            s += x.pow(d) / factorial(d)
-            flag = 0
-            d += 2
-        }
-    }
-    return s //
-}
+fun sin(x: Double, eps: Double): Double = TODO()
 
 /**
  * Средняя (4 балла)
@@ -311,30 +285,20 @@ fun cos(x: Double, eps: Double): Double = TODO()
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun col(n: Int): Int {
-    if (n / 10 == 0) return 1
-    var s = n
-    var k = 0
-    while (s > 0) {
-        k++
-        s /= 10
-    }
-    return k
-}
 
 fun squareSequenceDigit(n: Int): Int {
     var s = 0
-    var i = 1.0
+    var i = 1
     var box = 0
-    var ch = 0.0
+    var ch = 0
     while (s < n) {
-        s += col(i.pow(2.0).toInt())
-        box = col(i.pow(2.0).toInt())
-        ch = i.pow(2.0)
+        s += digitNumber(sqr(i))
+        box = digitNumber(sqr(i))
+        ch = sqr(i)
         i += 1
     }
     s -= box
-    var gl: Int = ch.toInt()
+    var gl = ch.toInt()
     var mas = emptyArray<Int>()
     while (gl > 0) {
         mas += gl % 10
@@ -361,8 +325,8 @@ fun fibSequenceDigit(n: Int): Int {
     var dbl = 0
     var cont = 0
     while (s < n) {
-        s += col(sled)  // col - функция, которую я написал в предыдущем задании
-        dbl = col(sled)
+        s += digitNumber(sled)
+        dbl = digitNumber(sled)
         cont = sled
         box = sled
         sled += pr

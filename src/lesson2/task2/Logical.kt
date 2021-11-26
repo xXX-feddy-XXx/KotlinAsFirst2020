@@ -50,14 +50,8 @@ fun queenThreatens(x1: Int, y1: Int, x2: Int, y2: Int): Boolean =
  */
 fun daysInMonth(month: Int, year: Int): Int {
     val g = if (year % 4 == 0) {
-        if (year % 100 == 0) {
-            year % 400 == 0
-        } else {
-            true
-        }
-    } else {
-        false
-    }
+        !((year % 100 == 0) && (year % 400 != 0))
+    } else false
     return if (((month % 2 == 1) && (month in 1..7)) || ((month % 2 == 0) && (month in 8..12))) 31
     else if (month == 2) {
         if (g) 29
@@ -90,7 +84,7 @@ fun circleInside(
  * Вернуть true, если кирпич пройдёт
  */
 fun brickPasses(a: Int, b: Int, c: Int, r: Int, s: Int): Boolean {
-    val mas: Array<Int> = arrayOf(a, b, c)
+    val mas = arrayOf(a, b, c)
     mas.sort()
     return !((mas[0] > min(r, s)) || (mas[1] > max(r, s)))
 }
