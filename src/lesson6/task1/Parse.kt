@@ -171,7 +171,7 @@ fun mostExpensive(description: String): String {
     return try {
         for (element in parts.indices) {
             val pair = parts[element].split(" ")
-            if (price < pair[1].toDouble()) {
+            if (price <= pair[1].toDouble()) {
                 price = pair[1].toDouble()
                 name = pair[0]
             }
