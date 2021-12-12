@@ -5,6 +5,7 @@ package lesson4.task1
 import lesson1.task1.discriminant
 import lesson1.task1.sqr
 import lesson3.task1.digitNumber
+import lesson3.task1.isPrime
 import kotlin.math.sqrt
 import kotlin.math.pow
 
@@ -123,14 +124,7 @@ fun buildSumExample(list: List<Int>) = list.joinToString(separator = " + ", post
  * по формуле abs = sqrt(a1^2 + a2^2 + ... + aN^2).
  * Модуль пустого вектора считать равным 0.0.
  */
-fun abs(v: List<Double>): Double {
-    if (v.isEmpty()) return 0.0
-    var s = 0.0
-    for (i in v.indices) {
-        s += sqr(v[i])
-    }
-    return sqrt(s)
-}
+fun abs(v: List<Double>) = sqrt(v.sumOf { it * it })
 
 /**
  * Простая (2 балла)
@@ -139,13 +133,7 @@ fun abs(v: List<Double>): Double {
  */
 fun mean(list: List<Double>): Double {
     if (list.isEmpty()) return 0.0
-    var s = 0.0
-    var k = 0
-    for (i in list.indices) {
-        k++
-        s += list[i]
-    }
-    return (s / k)
+    return list.average()
 }
 
 /**
@@ -157,15 +145,9 @@ fun mean(list: List<Double>): Double {
  * Обратите внимание, что данная функция должна изменять содержание списка list, а не его копии.
  */
 fun center(list: MutableList<Double>): MutableList<Double> {
-    if (list.isEmpty()) return list
-    var s = 0.0
-    var k = 0
-    for (i in list.indices) {
-        k++
-        s += list[i]
-    }
-    for (i in list.indices) {
-        list[i] -= s / k
+    val x = mean(list)
+    for (i in 0 until list.size) {
+        list[i] -= x
     }
     return list
 }
@@ -178,12 +160,8 @@ fun center(list: MutableList<Double>): MutableList<Double> {
  * C = a1b1 + a2b2 + ... + aNbN. Произведение пустых векторов считать равным 0.
  */
 fun times(a: List<Int>, b: List<Int>): Int {
-    if (a.isEmpty() || b.isEmpty()) return 0
-    var s = 0
-    for (i in a.indices) {
-        s += a[i] * b[i]
-    }
-    return s
+    var k = 0
+    return a.sumOf { it * b[k++] }
 }
 
 /**
@@ -195,14 +173,9 @@ fun times(a: List<Int>, b: List<Int>): Int {
  * Значение пустого многочлена равно 0 при любом x.
  */
 fun polynom(p: List<Int>, x: Int): Int {
-    if (p.isEmpty()) return 0
-    var y = x
-    var s = p[0]
-    for (i in 1 until p.size) {
-        s += p[i] * y
-        y *= x // у меня почему-то здесь .pow не работал, пришлось так сделать
-    }
-    return s
+    var k = 0
+    val y = x.toDouble()
+    return p.sumOf { it * y.pow(k++) }.toInt()
 }
 
 /**
@@ -217,12 +190,13 @@ fun polynom(p: List<Int>, x: Int): Int {
  */
 fun accumulate(list: MutableList<Int>): MutableList<Int> {
     if (list.isEmpty()) return list
-    var s = list[0]
-    var box: Int
-    for (i in 1 until list.size) {
-        box = list[i]
-        list[i] += s
-        s += box
+    var sm = 0
+    list.forEachIndexed { i, it ->
+        if (sm == 0) sm = it
+        else {
+            list[i] += sm
+            sm += it
+        }
     }
     return list
 }
@@ -234,30 +208,20 @@ fun accumulate(list: MutableList<Int>): MutableList<Int> {
  * Результат разложения вернуть в виде списка множителей, например 75 -> (3, 5, 5).
  * Множители в списке должны располагаться по возрастанию.
  */
-fun pr(n: Int): Boolean {
-    if (n == 2) return true
-    var d = 2
-    while (d * d <= n) {
-        if (n % d == 0) return false
-        d++
-    }
-    return true
-}
 
 fun factorize(n: Int): List<Int> {
-    if (pr(n)) return listOf(n)
-    var mas = emptyList<Int>()
+    if (isPrime(n)) return listOf(n)
+    val mas = mutableListOf<Int>()
     var d = 2
     var p = n
     while (d <= p) {
         if (p % d == 0) {
-            if (pr(d)) mas += d
+            if (isPrime(d)) mas.add(d)
             p /= d
             d = 1
         }
         d++
     }
-    mas.sorted()
     return mas
 }
 
@@ -269,21 +233,11 @@ fun factorize(n: Int): List<Int> {
  * Множители в результирующей строке должны располагаться по возрастанию.
  */
 fun factorizeToString(n: Int): String {
-    if (pr(n)) return "$n"
-    var mas = emptyList<Int>()
-    var d = 2
-    var p = n
-    while (d <= p) {
-        if (p % d == 0) {
-            if (pr(d)) mas += d
-            p /= d
-            d = 1
-        }
-        d++
-    }
-    if (mas.isEmpty()) return "$n"
-    mas.sorted()
-    return mas.joinToString(separator = "*")
+    if (isPrime(n)) return "$n"
+    val ch = factorize(n)
+    var otv = ""
+    ch.forEach { otv += "$it*" }
+    return otv.dropLast(1)
 }
 
 /**
@@ -295,10 +249,10 @@ fun factorizeToString(n: Int): String {
  */
 fun convert(n: Int, base: Int): List<Int> {
     if (n < base) return listOf(n)
-    var mas = emptyList<Int>()
+    val mas = mutableListOf<Int>()
     var ch = n
     while (ch > 0) {
-        mas += ch % base
+        mas.add(ch % base)
         ch /= base
     }
     return mas.reversed()
@@ -318,18 +272,18 @@ fun convert(n: Int, base: Int): List<Int> {
 fun convertToString(n: Int, base: Int): String {
     if (n == 0) return "0"
     if ((n < base) && (base <= 10)) return "$n"
-    var mas = emptyList<String>()
+    val mas = mutableListOf<String>()
     var ch = n
     var p: Int
     while (ch > 0) {
         p = ch % base
-        mas += if (p >= 10) {
-            (p + 55).toChar().toString()
-        } else "$p"
+        if (p >= 10) {
+            mas.add((p + 'a'.toInt() - 10).toChar().toString())
+        } else mas.add("$p")
         ch /= base
     }
-    mas = mas.reversed()
-    val otv = mas.joinToString(separator = "")
+    val g = mas.reversed()
+    val otv = g.joinToString(separator = "")
     return otv.toLowerCase()
 }
 
@@ -342,12 +296,7 @@ fun convertToString(n: Int, base: Int): String {
  */
 fun decimal(digits: List<Int>, base: Int): Int {
     var k = digits.size - 1
-    var s = 0
-    for (i in digits.indices) {
-        s += (digits[i] * base.toDouble().pow(k)).toInt()
-        k--
-    }
-    return s
+    return digits.sumOf { it * base.toDouble().pow(k--) }.toInt()
 }
 
 /**
@@ -363,20 +312,14 @@ fun decimal(digits: List<Int>, base: Int): Int {
  * (например, str.toInt(base)), запрещается.
  */
 fun decimalFromString(str: String, base: Int): Int {
-    var mas: MutableList<Int> = mutableListOf()
-    for (i in str.indices) {
-        if (str[i].toChar().toInt() in 97..122) mas.add(
-            str[i].toChar().toInt() - 87
+    val mas: MutableList<Int> = mutableListOf()
+    str.forEach {
+        if (it.toChar().toInt() in 97..122) mas.add(
+            it.toChar().toInt() - 87
         )
-        else mas.add(str[i].toString().toInt())
+        else mas.add(it.toString().toInt())
     }
-    var k = mas.size - 1
-    var s = 0
-    for (i in mas.indices) {
-        s += (mas[i] * base.toDouble().pow(k)).toInt()
-        k--
-    }
-    return s
+    return decimal(mas, base)
 }
 
 /**
@@ -387,15 +330,6 @@ fun decimalFromString(str: String, base: Int): Int {
  * 90 = XC, 100 = C, 400 = CD, 500 = D, 900 = CM, 1000 = M.
  * Например: 23 = XXIII, 44 = XLIV, 100 = C
  */
-fun col(n: Int): Int {
-    var k = 0
-    var x = n
-    while (x > 0) {
-        k++
-        x /= 10
-    }
-    return k
-}
 
 fun ch(n: Int, s: String): String {
     if (n == 0) return ""
@@ -429,18 +363,18 @@ fun sot(n: Int): String {
 
 fun roman(n: Int): String {
     var otv = ""
-    var k = col(n)
+    var k = digitNumber(n)
     return when (k) {
         1 -> ed(n % 10)
         2 -> des(n / 10 % 10) + ed(n % 10)
         3 -> sot(n / 100) + des(n / 10 % 10) + ed(n % 10)
         else -> {
             var p = n
-            while (col(p) > 3) {
+            while (digitNumber(p) > 3) {
                 p -= 1000
                 otv += "M"
             }
-            k = col(p)
+            k = digitNumber(p)
             return when (k) {
                 0 -> otv
                 1 -> otv + ed(p % 10)
@@ -458,136 +392,92 @@ fun roman(n: Int): String {
  * Например, 375 = "триста семьдесят пять",
  * 23964 = "двадцать три тысячи девятьсот шестьдесят четыре"
  */
-fun un(n: Int): String {
-    when (n) {
-        1 -> return "один"
-        2 -> return "два"
-        3 -> return "три"
-        4 -> return "четыре"
-        5 -> return "пять"
-        6 -> return "шесть"
-        7 -> return "семь"
-        8 -> return "восемь"
-        9 -> return "девять"
-    }
-    return ""
+fun un(n: Int) = when (n) {
+    1 -> "один"
+    2 -> "два"
+    3 -> "три"
+    4 -> "четыре"
+    5 -> "пять"
+    6 -> "шесть"
+    7 -> "семь"
+    8 -> "восемь"
+    9 -> "девять"
+    else -> ""
 }
 
-fun un2(n: Int): String {
-    when (n) {
-        1 -> return "одна тысяча"
-        2 -> return "две тысячи"
-        3 -> return "три тысячи"
-        4 -> return "четыре тысячи"
-        5 -> return "пять тысяч"
-        6 -> return "шесть тысяч"
-        7 -> return "семь тысяч"
-        8 -> return "восемь тысяч"
-        9 -> return "девять тысяч"
-    }
-    return ""
+
+fun un2(n: Int) = when (n) {
+    1 -> "одна тысяча"
+    2 -> "две тысячи"
+    3 -> "три тысячи"
+    4 -> "четыре тысячи"
+    5 -> "пять тысяч"
+    6 -> "шесть тысяч"
+    7 -> "семь тысяч"
+    8 -> "восемь тысяч"
+    9 -> "девять тысяч"
+    else -> ""
 }
 
-fun hun(n: Int): String {
-    var mas: MutableList<Int> = mutableListOf()
+
+fun hot(n: Int, m: Int): String { // если нам нужная фун-ия для сотен(m == any), для тысяч(m == 1)
+    val mas = mutableListOf<Int>()
     var k = digitNumber(n)
     val ch = n.toString()
     for (i in 0 until k) {
         mas += ch[i].digitToInt()
     }
-    var otv = ""
+    val otv = StringBuilder()
     var flag = 0
     for (i in 0 until digitNumber(n)) {
         when (k) {
             3 -> if (mas[i] == 0) break
             else {
-                otv += if (mas[i] == 1) "сто"
-                else if (mas[i] == 2) "двести"
-                else if ((mas[i] > 2) && (mas[i] <= 4)) (un(mas[i]) + "ста")
-                else un(mas[i]) + "сот"
+                if (mas[i] == 1) otv.append("сто")
+                else if (mas[i] == 2) otv.append("двести")
+                else if ((mas[i] > 2) && (mas[i] <= 4)) otv.append((un(mas[i]) + "ста"))
+                else otv.append(un(mas[i]) + "сот")
             }
             2 -> if (mas[i] != 0) {
                 if (mas[i] == 1) {
                     when (mas[i + 1]) {
-                        0 -> otv += "десять"
-                        1 -> otv += "одиннадцать"
-                        2 -> otv += "двенадцать"
-                        3 -> otv += "тринадцать"
-                        4 -> otv += "четырнадцать"
-                        5 -> otv += "пятнадцать"
-                        6 -> otv += "шестнадцать"
-                        7 -> otv += "семнадцать"
-                        8 -> otv += "восемнадцать"
-                        9 -> otv += "девятнадцать"
+                        0 -> otv.append("десять")
+                        1 -> otv.append("одиннадцать")
+                        2 -> otv.append("двенадцать")
+                        3 -> otv.append("тринадцать")
+                        4 -> otv.append("четырнадцать")
+                        5 -> otv.append("пятнадцать")
+                        6 -> otv.append("шестнадцать")
+                        7 -> otv.append("семнадцать")
+                        8 -> otv.append("восемнадцать")
+                        9 -> otv.append("девятнадцать")
                     }
-                    otv += " "
+                    if (m == 1) otv.append(" " + "тысяч" + " ")
+                    else otv.append(" ")
                     break
                 } else {
-                    otv += if ((mas[i] >= 2) && (mas[i] <= 3)) un(mas[i]) + "дцать"
-                    else if (mas[i] == 4) "сорок"
-                    else if (mas[i] == 9) "девяносто"
-                    else un(mas[i]) + "десят"
+                    if ((mas[i] >= 2) && (mas[i] <= 3)) otv.append(un(mas[i]) + "дцать")
+                    else if (mas[i] == 4) otv.append("сорок")
+                    else if (mas[i] == 9) otv.append("девяносто")
+                    else otv.append(un(mas[i]) + "десят")
                 }
             } else flag = 1
-            1 -> if (mas[i] == 0) break
-            else otv += un(mas[i])
-        }
-        if (flag == 0) otv += " "
-        else flag = 0
-        k--
-    }
-    return otv.dropLast(1)
-}
-
-fun th(n: Int): String {
-    var mas: MutableList<Int> = mutableListOf()
-    var k = digitNumber(n)
-    val ch = n.toString()
-    for (i in 0 until k) {
-        mas += ch[i].digitToInt()
-    }
-    var otv = ""
-    var flag = 0
-    for (i in 0 until digitNumber(n)) {
-        when (k) {
-            3 -> if (mas[i] == 0) break
-            else {
-                otv += if (mas[i] == 1) "сто"
-                else if (mas[i] == 2) "двести"
-                else if ((mas[i] > 2) && (mas[i] <= 4)) (un(mas[i]) + "ста")
-                else un(mas[i]) + "сот"
+            1 -> {
+                if (m == 1) {
+                    if (mas[i] == 0) otv.append("тысяч")
+                    else otv.append(un2(mas[i]))
+                } else {
+                    if (mas[i] == 0) break
+                    else otv.append(un(mas[i]))
+                }
             }
-            2 -> if (mas[i] != 0) {
-                if (mas[i] == 1) {
-                    when (mas[i + 1]) {
-                        0 -> otv += "десять"
-                        1 -> otv += "одиннадцать"
-                        2 -> otv += "двенадцать"
-                        3 -> otv += "тринадцать"
-                        4 -> otv += "четырнадцать"
-                        5 -> otv += "пятнадцать"
-                        6 -> otv += "шестнадцать"
-                        7 -> otv += "семнадцать"
-                        8 -> otv += "восемнадцать"
-                        9 -> otv += "девятнадцать"
-                    }
-                    otv += " " + "тысяч" + " "
-                    break
-                } else {
-                    otv += if ((mas[i] >= 2) && (mas[i] <= 3)) un(mas[i]) + "дцать"
-                    else if (mas[i] == 4) "сорок"
-                    else if (mas[i] == 9) "девяносто"
-                    else un(mas[i]) + "десят"
-                }
-            } else flag = 1
-            1 -> otv += if (mas[i] == 0) "тысяч"
-            else un2(mas[i])
         }
-        if (flag == 0) otv += " "
+        if (flag == 0) otv.append(" ")
         else flag = 0
         k--
     }
-    return otv
+    return if (m == 1) otv.toString()
+    else otv.toString().dropLast(1)
 }
 
 fun russian(n: Int): String {
@@ -595,8 +485,8 @@ fun russian(n: Int): String {
     val x = n % 1000
     val y = n / 1000
     return if (y > 0) {
-        if (x > 0) th(y) + hun(x)
-        else (th(y) + hun(x)).dropLast(1)
-    } else hun(x)
+        if (x > 0) hot(y, 1) + hot(x, 0)
+        else (hot(y, 1) + hot(x, 0)).dropLast(1)
+    } else hot(x, 0)
 }
 
