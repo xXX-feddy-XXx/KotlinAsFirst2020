@@ -210,10 +210,15 @@ fun averageStockPrice(stockPrices: List<Pair<String, Double>>): Map<String, Doub
  *   ) -> "Мария"
  */
 fun findCheapestStuff(stuff: Map<String, Pair<String, Double>>, kind: String): String? {
-    var mn = MAX_VALUE.toDouble()
+    var mn = 0.0
     var otv: String? = null
+    var flag = 0
     stuff.forEach { (key, value) ->
-        if (value.first == kind && value.second < mn) {
+        if (flag == 0 && value.first == kind) {
+            mn = value.second
+            flag = 1
+        }
+        if (value.first == kind && value.second <= mn) {
             mn = value.second
             otv = key
         }

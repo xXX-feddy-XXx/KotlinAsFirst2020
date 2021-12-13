@@ -106,7 +106,7 @@ fun dateStrToDigit(str: String): String {
             else -> 0
         }
         return if (!dInM(month, mas[0].toInt(), mas[2].toInt())) ""
-        else return String.format("%02d.%02d.%04d", mas[0].toInt(), month, mas[2].toInt())
+        else return String.format("%02d.%02d.%d", mas[0].toInt(), month, mas[2].toInt())
     } catch (e: IndexOutOfBoundsException) {
         return ""
     }
