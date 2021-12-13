@@ -168,33 +168,14 @@ fun flattenPhoneNumber(phone: String): String {
  * При нарушении формата входной строки или при отсутствии в ней чисел, вернуть -1.
  */
 fun bestLongJump(jumps: String): Int {
-    var otv = -1
-    val symbols = listOf<String>(" ", "-", "%")
-    val numbers = listOf<String>("0", "1", "2", "3", "4", "5", "6", "7", "8", "9")
-    var flag = 0
-    var box = ""
-    jumps.forEach {
-        flag = if (it.toString() in numbers) 1
-        else {
-            if (it.toString() !in symbols) return -1
-            0
-        }
-        if (flag == 1) box += it
-        else {
-            if (box != "") {
-                if (box.toInt() > otv) {
-                    otv = box.toInt()
-                }
-                box = ""
-            }
-        }
+    if (jumps.contains(Regex("""([^-%\s\d])"""))) return -1
+    if (Regex("""\d+""").find(jumps) == null) return -1
+    val mas = Regex("""\d+""").findAll(jumps)
+    var mx = 0
+    for (i in mas) {
+        if (i.value.toInt() > mx) mx = i.value.toString().toInt()
     }
-    if (box != "") {
-        if (box.toInt() > otv) {
-            otv = box.toInt()
-        }
-    }
-    return otv
+    return mx
 }
 
 
