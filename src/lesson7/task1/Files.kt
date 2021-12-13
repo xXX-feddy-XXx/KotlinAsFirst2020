@@ -65,11 +65,11 @@ fun alignFile(inputName: String, lineLength: Int, outputName: String) {
  */
 fun deleteMarked(inputName: String, outputName: String) {
     val reg = Regex("^_")
-    val text = File(inputName).readText().split("\n")
+    val text = File(inputName).readLines()
     File(outputName).bufferedWriter().use {
         for (i in text.indices) {
             if (!reg.containsMatchIn(text[i]))
-                it.write(text[i])
+                it.write(text[i] + "\n")
         }
     }
 }
