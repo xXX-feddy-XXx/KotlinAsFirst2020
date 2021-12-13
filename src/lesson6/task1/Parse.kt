@@ -74,7 +74,43 @@ fun main() {
  * Обратите внимание: некорректная с точки зрения календаря дата (например, 30.02.2009) считается неверными
  * входными данными.
  */
-fun dateStrToDigit(str: String): String = TODO()
+fun dInM(month: Int, day: Int, year: Int): Boolean {
+    val days = listOf<Int>(31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31)
+    if (month != 2) return (day in 1..days[month - 1])
+    else {
+        val g = if (year % 4 == 0) {
+            !((year % 100 == 0) && (year % 400 != 0))
+        } else false
+        if (g && day in 1..29) return true
+        else if (day in 1..28) return false
+    }
+    return false
+}
+
+fun dateStrToDigit(str: String): String {
+    val mas = str.split(" ")
+    try {
+        val month = when (mas[1]) {
+            "января" -> 1
+            "февраля" -> 2
+            "марта" -> 3
+            "апреля" -> 4
+            "мая" -> 5
+            "июня" -> 6
+            "июля" -> 7
+            "августа" -> 8
+            "сентября" -> 9
+            "октября" -> 10
+            "ноября" -> 11
+            "декабря" -> 12
+            else -> 0
+        }
+        return if (!dInM(month, mas[0].toInt(), mas[2].toInt())) ""
+        else return String.format("%02d.%02d.%04d", mas[0].toInt(), month, mas[2].toInt())
+    } catch (e: IndexOutOfBoundsException) {
+        return ""
+    }
+}
 
 /**
  * Средняя (4 балла)
@@ -102,7 +138,22 @@ fun dateDigitToStr(digital: String): String = TODO()
  *
  * PS: Дополнительные примеры работы функции можно посмотреть в соответствующих тестах.
  */
-fun flattenPhoneNumber(phone: String): String = TODO()
+fun flattenPhoneNumber(phone: String): String {
+    val symbols = listOf<String>("+", "-", "(", ")", " ")
+    val numbers = listOf<String>("0", "1", "2", "3", "4", "5", "6", "7", "8", "9")
+    var otv = ""
+    var flag = 0
+    if ("+" in phone) otv += "+"
+    phone.forEach {
+        if (it.toString() in numbers) {
+            otv += it.toString()
+            flag = 0
+        } else if (it.toString() !in symbols) return ""
+        if (it.toString() == "(") flag = 1
+        if (it.toString() == ")" && flag == 1) return ""
+    }
+    return otv
+}
 
 /**
  * Средняя (5 баллов)
@@ -114,7 +165,36 @@ fun flattenPhoneNumber(phone: String): String = TODO()
  * Прочитать строку и вернуть максимальное присутствующее в ней число (717 в примере).
  * При нарушении формата входной строки или при отсутствии в ней чисел, вернуть -1.
  */
-fun bestLongJump(jumps: String): Int = TODO()
+fun bestLongJump(jumps: String): Int {
+    var otv = -1
+    val symbols = listOf<String>(" ", "-", "%")
+    val numbers = listOf<String>("0", "1", "2", "3", "4", "5", "6", "7", "8", "9")
+    var flag = 0
+    var box = ""
+    jumps.forEach {
+        flag = if (it.toString() in numbers) 1
+        else {
+            if (it.toString() !in symbols) return -1
+            0
+        }
+        if (flag == 1) box += it
+        else {
+            if (box != "") {
+                if (box.toInt() > otv) {
+                    otv = box.toInt()
+                }
+                box = ""
+            }
+        }
+    }
+    if (box != "") {
+        if (box.toInt() > otv) {
+            otv = box.toInt()
+        }
+    }
+    return otv
+}
+
 
 /**
  * Сложная (6 баллов)
@@ -127,7 +207,35 @@ fun bestLongJump(jumps: String): Int = TODO()
  * При нарушении формата входной строки, а также в случае отсутствия удачных попыток,
  * вернуть -1.
  */
-fun bestHighJump(jumps: String): Int = TODO()
+fun bestHighJump(jumps: String): Int {
+    var otv = -1
+    val symbols = listOf<String>(" ", "-", "%", "+")
+    val numbers = listOf<String>("0", "1", "2", "3", "4", "5", "6", "7", "8", "9")
+    var flag = 0
+    var box = ""
+    for (i in 0 until jumps.count() - 2) {
+        flag = if (jumps[i].toString() in numbers) 1
+        else {
+            if (jumps[i].toString() !in symbols) return -1
+            0
+        }
+        if (flag == 1) box += jumps[i]
+        else {
+            if (box != "") {
+                if (box.toInt() > otv && jumps[i + 1].toString() == "+") {
+                    otv = box.toInt()
+                }
+                box = ""
+            }
+        }
+    }
+    if (box != "") {
+        if (box.toInt() > otv && jumps[jumps.count() - 1].toString() == "+") {
+            otv = box.toInt()
+        }
+    }
+    return otv
+}
 
 /**
  * Сложная (6 баллов)
@@ -162,7 +270,21 @@ fun firstDuplicateIndex(str: String): Int = TODO()
  * или пустую строку при нарушении формата строки.
  * Все цены должны быть больше нуля либо равны нулю.
  */
-fun mostExpensive(description: String): String = TODO()
+fun mostExpensive(description: String): String {
+    try {
+        val mas = description.split("; ")
+        val list = mutableListOf<Pair<String, Double>>()
+        var box = listOf<String>()
+        mas.forEach {
+            box = it.split(" ")
+            list.add(Pair(box[0], box[1].toDouble()))
+        }
+        val mx = list.maxOf { it.second }
+        list.forEach { if (it.second == mx) return it.first }
+    } catch (e: IndexOutOfBoundsException) {
+    }
+    return ""
+}
 
 /**
  * Сложная (6 баллов)

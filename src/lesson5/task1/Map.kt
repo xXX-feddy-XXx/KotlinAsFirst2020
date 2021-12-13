@@ -3,8 +3,6 @@
 package lesson5.task1
 
 import java.lang.Integer.MAX_VALUE
-import java.lang.Integer.min
-import kotlin.math.max
 import kotlin.collections.MutableMap as muta
 
 
@@ -338,7 +336,19 @@ fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<Stri
  *   findSumOfTwo(listOf(1, 2, 3), 4) -> Pair(0, 2)
  *   findSumOfTwo(listOf(1, 2, 3), 6) -> Pair(-1, -1)
  */
-fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> = TODO()
+fun index(list: List<Int>, n: Int): Int {
+    list.forEachIndexed { index, it -> if (it == n) return index }
+    return -1
+}
+
+fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
+    val mas = list.toMutableList()
+    list.forEachIndexed() { i, it ->
+        mas.removeAt(0)
+        if ((number - it) in mas) return Pair(i, index(list, number - it))
+    }
+    return Pair(-1, -1)
+}
 
 /**
  * Очень сложная (8 баллов)
@@ -361,4 +371,26 @@ fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> = TODO()
  *     450
  *   ) -> emptySet()
  */
-fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<String> = TODO()
+fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<String> {
+    val mapSize = treasures.count()
+    val title = treasures.keys.toMutableList()
+    val weightPrice = treasures.values.toMutableList()
+    val backpack = Array(mapSize + 1) { IntArray(capacity + 1) }
+    weightPrice.forEachIndexed { i, (weight, price) ->
+        for (j in 1..capacity) {
+            if (j >= weight) backpack[i + 1][j] = backpack[i][j].coerceAtLeast(backpack[i][j - weight] + price)
+            else backpack[i + 1][j] = backpack[i][j]
+        }
+    }
+    var box = capacity
+    val otv = ArrayList<String>()
+    for (i in mapSize downTo 1) {
+        if (backpack[i][box] != backpack[i - 1][box]) {
+            box -= weightPrice[i - 1].first
+            otv += title[i - 1]
+        }
+    }
+    return otv.toSet()
+}
+// При решении задачи использовал материал
+// https://neerc.ifmo.ru/wiki/index.php?title=Задача_о_рюкзаке
