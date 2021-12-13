@@ -82,7 +82,7 @@ fun dInM(month: Int, day: Int, year: Int): Boolean {
             !((year % 100 == 0) && (year % 400 != 0))
         } else false
         if (g && day in 1..29) return true
-        else if (day in 1..28) return false
+        else if (day in 1..28) return true
     }
     return false
 }
