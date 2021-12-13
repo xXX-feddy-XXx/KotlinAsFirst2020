@@ -88,7 +88,6 @@ fun dInM(month: Int, day: Int, year: Int): Boolean {
 }
 
 fun dateStrToDigit(str: String): String {
-    if (str == " ") return ""
     val mas = str.split(" ")
     try {
         val month = when (mas[1]) {
@@ -109,6 +108,8 @@ fun dateStrToDigit(str: String): String {
         return if (!dInM(month, mas[0].toInt(), mas[2].toInt())) ""
         else return String.format("%02d.%02d.%d", mas[0].toInt(), month, mas[2].toInt())
     } catch (e: IndexOutOfBoundsException) {
+        return ""
+    } catch (e: NumberFormatException) {
         return ""
     }
 }
