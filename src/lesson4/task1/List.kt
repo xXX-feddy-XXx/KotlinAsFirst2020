@@ -345,7 +345,7 @@ fun roman(n: Int): String {
     return string
 }
 
-// pofiksit
+
 
 /**
  * Очень сложная (7 баллов)
