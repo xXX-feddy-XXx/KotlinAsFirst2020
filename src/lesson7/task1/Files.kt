@@ -2,9 +2,7 @@
 
 package lesson7.task1
 
-import ru.spbstu.wheels.NullableMonad.map
 import java.io.File
-import kotlin.math.max
 
 // Урок 7: работа с файлами
 // Урок интегральный, поэтому его задачи имеют сильно увеличенную стоимость
@@ -88,9 +86,10 @@ fun deleteMarked(inputName: String, outputName: String) {
  */
 
 fun countSubstrings(inputName: String, substrings: List<String>): Map<String, Int> {
+    val sub = substrings.toSet().toList()
     val otv = mutableMapOf<String, Int>()
     File(inputName).forEachLine { str ->
-        substrings.forEach { word ->
+        sub.forEach { word ->
             var k = 0
             str.lowercase().windowed(word.count()).forEach { if (it == word.lowercase()) k++ }
             otv[word] = otv.getOrPut(word) { 0 } + k
@@ -136,7 +135,7 @@ fun sibilants(inputName: String, outputName: String) {
  */
 fun centerFile(inputName: String, outputName: String) {
     var mx = 0
-    File(inputName).forEachLine { if (it.trim().length > mx) mx = it.length }
+    File(inputName).forEachLine { if (it.trim().length > mx) mx = it.trim().length }
     File(outputName).bufferedWriter().use {
         File(inputName).forEachLine { line ->
             for (i in 1..(mx - line.trim().length) / 2) {
