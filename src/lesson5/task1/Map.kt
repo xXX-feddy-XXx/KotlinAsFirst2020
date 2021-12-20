@@ -2,6 +2,7 @@
 
 package lesson5.task1
 
+import lesson4.task1.mean
 import java.lang.Integer.MAX_VALUE
 import kotlin.collections.MutableMap as muta
 
@@ -184,15 +185,8 @@ fun mergePhoneBooks(mapA: Map<String, String>, mapB: Map<String, String>): Map<S
  *   averageStockPrice(listOf("MSFT" to 100.0, "MSFT" to 200.0, "NFLX" to 40.0))
  *     -> mapOf("MSFT" to 150.0, "NFLX" to 40.0)
  */
-fun averageStockPrice(stockPrices: List<Pair<String, Double>>): Map<String, Double> {
-    val otv = mutableMapOf<String, Double>()
-    val x = stockPrices.groupBy { it.first }
-    val y = stockPrices.groupingBy { it.first }.eachCount()
-    x.forEach { (key, value) ->
-        otv[key] = value.sumOf { it.second } / y[key]!!
-    }
-    return otv
-}
+fun averageStockPrice(stockPrices: List<Pair<String, Double>>) =
+    stockPrices.groupBy({ it.first }, { it.second }).mapValues { mean(it.value) }
 
 /**
  * Средняя (4 балла)
@@ -209,22 +203,8 @@ fun averageStockPrice(stockPrices: List<Pair<String, Double>>): Map<String, Doub
  *     "печенье"
  *   ) -> "Мария"
  */
-fun findCheapestStuff(stuff: Map<String, Pair<String, Double>>, kind: String): String? {
-    var mn = 0.0
-    var otv: String? = null
-    var flag = 0
-    stuff.forEach { (key, value) ->
-        if (flag == 0 && value.first == kind) {
-            mn = value.second
-            flag = 1
-        }
-        if (value.first == kind && value.second <= mn) {
-            mn = value.second
-            otv = key
-        }
-    }
-    return otv
-}
+fun findCheapestStuff(stuff: Map<String, Pair<String, Double>>, kind: String) =
+    stuff.filter { it.value.first == kind }.minByOrNull { it.value.second }?.key
 
 /**
  * Средняя (3 балла)
@@ -341,18 +321,17 @@ fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<Stri
  *   findSumOfTwo(listOf(1, 2, 3), 4) -> Pair(0, 2)
  *   findSumOfTwo(listOf(1, 2, 3), 6) -> Pair(-1, -1)
  */
-fun index(list: List<Int>, n: Int): Int {
-    list.forEachIndexed { index, it -> if (it == n) return index }
-    return -1
-}
 
 fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
-    val mas = list.toMutableList()
-    list.forEachIndexed() { i, it ->
-        mas.removeAt(0)
-        if ((number - it) in mas) return Pair(i, index(list, number - it))
+    var otv = Pair(-1, -1)
+    val box = mutableMapOf<Int, Int>()
+    var ch: Int
+    list.forEachIndexed { i, it ->
+        ch = number - it
+        if (ch !in box) box[it] = i
+        else otv = Pair(box[ch]!!, i)
     }
-    return Pair(-1, -1)
+    return otv
 }
 
 /**

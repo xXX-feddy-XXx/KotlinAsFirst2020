@@ -131,10 +131,8 @@ fun abs(v: List<Double>) = sqrt(v.sumOf { it * it })
  *
  * Рассчитать среднее арифметическое элементов списка list. Вернуть 0.0, если список пуст
  */
-fun mean(list: List<Double>): Double {
-    if (list.isEmpty()) return 0.0
-    return list.average()
-}
+fun mean(list: List<Double>) = if (list.isEmpty()) 0.0 else list.average()
+
 
 /**
  * Средняя (3 балла)
@@ -159,10 +157,7 @@ fun center(list: MutableList<Double>): MutableList<Double> {
  * представленные в виде списков a и b. Скалярное произведение считать по формуле:
  * C = a1b1 + a2b2 + ... + aNbN. Произведение пустых векторов считать равным 0.
  */
-fun times(a: List<Int>, b: List<Int>): Int {
-    var k = 0
-    return a.sumOf { it * b[k++] }
-}
+fun times(a: List<Int>, b: List<Int>) = a.mapIndexed { i, it -> it * b[i] }.sum()
 
 /**
  * Средняя (3 балла)
@@ -232,13 +227,7 @@ fun factorize(n: Int): List<Int> {
  * Результат разложения вернуть в виде строки, например 75 -> 3*5*5
  * Множители в результирующей строке должны располагаться по возрастанию.
  */
-fun factorizeToString(n: Int): String {
-    if (isPrime(n)) return "$n"
-    val ch = factorize(n)
-    var otv = ""
-    ch.forEach { otv += "$it*" }
-    return otv.dropLast(1)
-}
+fun factorizeToString(n: Int): String = factorize(n).joinToString(separator = "*")
 
 /**
  * Средняя (3 балла)
@@ -269,23 +258,10 @@ fun convert(n: Int, base: Int): List<Int> {
  * Использовать функции стандартной библиотеки, напрямую и полностью решающие данную задачу
  * (например, n.toString(base) и подобные), запрещается.
  */
-fun convertToString(n: Int, base: Int): String {
-    if (n == 0) return "0"
-    if ((n < base) && (base <= 10)) return "$n"
-    val mas = mutableListOf<String>()
-    var ch = n
-    var p: Int
-    while (ch > 0) {
-        p = ch % base
-        if (p >= 10) {
-            mas.add((p + 'a'.toInt() - 10).toChar().toString())
-        } else mas.add("$p")
-        ch /= base
+fun convertToString(n: Int, base: Int): String =
+    convert(n, base).joinToString(separator = "") {
+        if (it >= 10) (it + 'a'.toInt() - 10).toChar().toString() else it.toString()
     }
-    val g = mas.reversed()
-    val otv = g.joinToString(separator = "")
-    return otv.toLowerCase()
-}
 
 /**
  * Средняя (3 балла)
@@ -314,10 +290,12 @@ fun decimal(digits: List<Int>, base: Int): Int {
 fun decimalFromString(str: String, base: Int): Int {
     val mas: MutableList<Int> = mutableListOf()
     str.forEach {
-        if (it.toChar().toInt() in 97..122) mas.add(
-            it.toChar().toInt() - 87
+        mas.add(
+            when (it) {
+                in '0'..'9' -> it - '0'
+                else -> it - 'a' + 10
+            }
         )
-        else mas.add(it.toString().toInt())
     }
     return decimal(mas, base)
 }
@@ -331,58 +309,21 @@ fun decimalFromString(str: String, base: Int): Int {
  * Например: 23 = XXIII, 44 = XLIV, 100 = C
  */
 
-fun ch(n: Int, s: String): String {
-    if (n == 0) return ""
-    var otv = ""
-    for (i in 1..n) {
-        otv += s
-    }
-    return otv
-}
-
-fun ed(n: Int): String {
-    return if (n <= 3) ch(n, "I")
-    else if (n == 4) "I" + "V"
-    else if ((n >= 5) && (n <= 8)) "V" + ch(n - 5, "I")
-    else "I" + "X"
-}
-
-fun des(n: Int): String {
-    return if (n <= 3) ch(n, "X")
-    else if (n == 4) "XL"
-    else if ((n >= 5) && (n <= 8)) "L" + ch(n - 5, "X")
-    else "XC"
-}
-
-fun sot(n: Int): String {
-    return if (n <= 3) ch(n, "C")
-    else if (n == 4) "CD"
-    else if ((n >= 5) && (n <= 8)) "D" + ch(n - 5, "C")
-    else "CM"
-}
-
 fun roman(n: Int): String {
-    var otv = ""
-    var k = digitNumber(n)
-    return when (k) {
-        1 -> ed(n % 10)
-        2 -> des(n / 10 % 10) + ed(n % 10)
-        3 -> sot(n / 100) + des(n / 10 % 10) + ed(n % 10)
-        else -> {
-            var p = n
-            while (digitNumber(p) > 3) {
-                p -= 1000
-                otv += "M"
-            }
-            k = digitNumber(p)
-            return when (k) {
-                0 -> otv
-                1 -> otv + ed(p % 10)
-                2 -> otv + des(p / 10 % 10) + ed(p % 10)
-                else -> otv + sot(p / 100) + des(p / 10 % 10) + ed(p % 10)
+    val romanDigits = listOf("M", "CM", "D", "CD", "C", "XC", "L", "XL", "X", "IX", "V", "IV", "I")
+    val arabianDigits = listOf(1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1)
+    val otv = StringBuilder()
+    var p = n
+    while (p > 0) {
+        for (i in arabianDigits.indices) {
+            if (p - arabianDigits[i] >= 0) {
+                otv.append(romanDigits[i])
+                p -= arabianDigits[i]
+                break
             }
         }
     }
+    return otv.toString()
 }
 
 /**

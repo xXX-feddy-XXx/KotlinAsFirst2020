@@ -4,6 +4,7 @@ package lesson7.task1
 
 import ru.spbstu.wheels.NullableMonad.map
 import java.io.File
+import kotlin.math.max
 
 // Урок 7: работа с файлами
 // Урок интегральный, поэтому его задачи имеют сильно увеличенную стоимость
@@ -64,16 +65,16 @@ fun alignFile(inputName: String, lineLength: Int, outputName: String) {
  * Подчёркивание в середине и/или в конце строк значения не имеет.
  */
 fun deleteMarked(inputName: String, outputName: String) {
-    val writer = File(outputName).bufferedWriter()
-    for (line in File(inputName).readLines()) {
-        if (line.contains(Regex("""^_"""))) continue
-        if (line.isEmpty()) writer.newLine()
-        else {
-            writer.write(line)
-            writer.newLine()
+    File(outputName).bufferedWriter().use {
+        for (line in File(inputName).readLines()) {
+            if (line.contains(Regex("""^_"""))) continue
+            if (line.isEmpty()) it.newLine()
+            else {
+                it.write(line)
+                it.newLine()
+            }
         }
     }
-    writer.close()
 }
 
 /**
@@ -85,19 +86,14 @@ fun deleteMarked(inputName: String, outputName: String) {
  * Регистр букв игнорировать, то есть буквы е и Е считать одинаковыми.
  *
  */
+
 fun countSubstrings(inputName: String, substrings: List<String>): Map<String, Int> {
     val otv = mutableMapOf<String, Int>()
-    substrings.forEach {
-        otv[it] = 0
-    }
-    for (line in File(inputName).readLines()) {
-        substrings.forEach {
-            val p = it.lowercase()
-            if (line.lowercase().contains(Regex(p))) {
-                var k = 0
-                val mas = Regex(p).findAll(line).forEach { k++ }
-                otv[it] = otv.getOrPut(it) { 0 } + k
-            }
+    File(inputName).forEachLine { str ->
+        substrings.forEach { word ->
+            var k = 0
+            str.lowercase().windowed(word.count()).forEach { if (it == word.lowercase()) k++ }
+            otv[word] = otv.getOrPut(word) { 0 } + k
         }
     }
     return otv
@@ -139,7 +135,17 @@ fun sibilants(inputName: String, outputName: String) {
  *
  */
 fun centerFile(inputName: String, outputName: String) {
-    TODO()
+    var mx = 0
+    File(inputName).forEachLine { if (it.trim().length > mx) mx = it.length }
+    File(outputName).bufferedWriter().use {
+        File(inputName).forEachLine { line ->
+            for (i in 1..(mx - line.trim().length) / 2) {
+                it.write(" ")
+            }
+            it.write(line.trim())
+            it.newLine()
+        }
+    }
 }
 
 /**

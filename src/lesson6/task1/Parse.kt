@@ -1,6 +1,7 @@
 @file:Suppress("UNUSED_PARAMETER", "ConvertCallChainIntoSequence")
 
 package lesson6.task1
+import lesson2.task2.daysInMonth
 
 // Урок 6: разбор строк, исключения
 // Максимальное количество баллов = 13
@@ -74,18 +75,6 @@ fun main() {
  * Обратите внимание: некорректная с точки зрения календаря дата (например, 30.02.2009) считается неверными
  * входными данными.
  */
-fun dInM(month: Int, day: Int, year: Int): Boolean {
-    val days = listOf<Int>(31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31)
-    if (month != 2) return (day in 1..days[month - 1])
-    else {
-        val g = if (year % 4 == 0) {
-            !((year % 100 == 0) && (year % 400 != 0))
-        } else false
-        if (g && day in 1..29) return true
-        else if (day in 1..28) return true
-    }
-    return false
-}
 
 fun dateStrToDigit(str: String): String {
     val mas = str.split(" ")
@@ -105,7 +94,7 @@ fun dateStrToDigit(str: String): String {
             "декабря" -> 12
             else -> 0
         }
-        return if (!dInM(month, mas[0].toInt(), mas[2].toInt())) ""
+        return if (daysInMonth(month, mas[2].toInt()) < mas[0].toInt() || month == 0) ""
         else return String.format("%02d.%02d.%d", mas[0].toInt(), month, mas[2].toInt())
     } catch (e: IndexOutOfBoundsException) {
         return ""
@@ -143,18 +132,18 @@ fun dateDigitToStr(digital: String): String = TODO()
 fun flattenPhoneNumber(phone: String): String {
     val symbols = listOf<String>("+", "-", "(", ")", " ")
     val numbers = listOf<String>("0", "1", "2", "3", "4", "5", "6", "7", "8", "9")
-    var otv = ""
-    var flag = 0
-    if ("+" in phone) otv += "+"
+    val otv = StringBuilder()
+    var flag = false
+    if ("+" in phone) otv.append("+")
     phone.forEach {
         if (it.toString() in numbers) {
-            otv += it.toString()
-            flag = 0
+            otv.append(it.toString())
+            flag = false
         } else if (it.toString() !in symbols) return ""
-        if (it.toString() == "(") flag = 1
-        if (it.toString() == ")" && flag == 1) return ""
+        if (it.toString() == "(") flag = true
+        if (it.toString() == ")" && flag) return ""
     }
-    return otv
+    return otv.toString()
 }
 
 /**
@@ -171,11 +160,7 @@ fun bestLongJump(jumps: String): Int {
     if (jumps.contains(Regex("""([^-%\s\d])"""))) return -1
     if (Regex("""\d+""").find(jumps) == null) return -1
     val mas = Regex("""\d+""").findAll(jumps)
-    var mx = 0
-    for (i in mas) {
-        if (i.value.toInt() > mx) mx = i.value.toString().toInt()
-    }
-    return mx
+    return mas.maxOf { it.value.toInt() }
 }
 
 
@@ -191,33 +176,9 @@ fun bestLongJump(jumps: String): Int {
  * вернуть -1.
  */
 fun bestHighJump(jumps: String): Int {
-    var otv = -1
-    val symbols = listOf<String>(" ", "-", "%", "+")
-    val numbers = listOf<String>("0", "1", "2", "3", "4", "5", "6", "7", "8", "9")
-    var flag = 0
-    var box = ""
-    for (i in 0 until jumps.count() - 2) {
-        flag = if (jumps[i].toString() in numbers) 1
-        else {
-            if (jumps[i].toString() !in symbols) return -1
-            0
-        }
-        if (flag == 1) box += jumps[i]
-        else {
-            if (box != "") {
-                if (box.toInt() > otv && jumps[i + 1].toString() == "+") {
-                    otv = box.toInt()
-                }
-                box = ""
-            }
-        }
-    }
-    if (box != "") {
-        if (box.toInt() > otv && jumps[jumps.count() - 1].toString() == "+") {
-            otv = box.toInt()
-        }
-    }
-    return otv
+    if (jumps.contains(Regex("""([^-%\s\d+])"""))) return -1
+    if (Regex("""\d+""").find(jumps) == null || (Regex("""\+""")).find(jumps) == null) return -1
+    return Regex("""\d+\s\+""").findAll(jumps).maxOf { it.value.split(" ")[0].toInt() }
 }
 
 /**
