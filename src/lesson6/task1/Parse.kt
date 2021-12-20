@@ -1,6 +1,7 @@
 @file:Suppress("UNUSED_PARAMETER", "ConvertCallChainIntoSequence")
 
 package lesson6.task1
+
 import lesson2.task2.daysInMonth
 
 // Урок 6: разбор строк, исключения
@@ -143,7 +144,8 @@ fun flattenPhoneNumber(phone: String): String {
         if (it.toString() == "(") flag = true
         if (it.toString() == ")" && flag) return ""
     }
-    return otv.toString()
+    return if (otv.toString() != "+") otv.toString()
+    else ""
 }
 
 /**
@@ -218,9 +220,8 @@ fun mostExpensive(description: String): String {
     try {
         val mas = description.split("; ")
         val list = mutableListOf<Pair<String, Double>>()
-        var box = listOf<String>()
         mas.forEach {
-            box = it.split(" ")
+            val box = it.split(" ")
             list.add(Pair(box[0], box[1].toDouble()))
         }
         val mx = list.maxOf { it.second }
