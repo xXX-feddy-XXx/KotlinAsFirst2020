@@ -483,3 +483,114 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
     TODO()
 }
 
+fun maze(inputName: String): String {
+    File(inputName).forEachLine {
+        if (it.contains(Regex("""[^\.#\^\*\n]"""))) throw IndexOutOfBoundsException()
+    }
+    val box = mutableListOf<Int>()
+    var lenght = 0
+    for (line in File(inputName).readLines()) {
+        lenght = line.length
+        line.forEach {
+            when (it.toString()) {
+                "*" -> box.add(0)
+                "^" -> box.add(-1)
+                "." -> box.add(-2)
+                else -> box.add(-10)
+            }
+        }
+    }
+    var mx = box.maxOf { it }
+    if (mx != 0) throw IndexOutOfBoundsException()
+    var flag = false
+    while (!flag) {
+        mx = box.maxOf { it }
+        var k = 0
+        box.forEachIndexed { i, it ->
+            if (it == mx) {
+                val left = i - 1
+                val right = i + 1
+                val up = i - lenght
+                val down = i + lenght
+                if (i % lenght >= 1) {
+                    if (box[left] == -1) flag = true
+                    else if (box[left] == -2) {
+                        box[left] = mx + 1
+                        k++
+                    }
+                }
+                if (i <= box.count() - 2 && (i == 0 || i % lenght != lenght - 1)) {
+                    if (box[right] == -1) flag = true
+                    else if (box[right] == -2) {
+                        box[right] = mx + 1
+                        k++
+                    }
+                }
+                if (i >= lenght) {
+                    if (box[up] == -1) flag = true
+                    else if (box[up] == -2) {
+                        box[up] = mx + 1
+                        k++
+                    }
+                }
+                if (i <= box.count() - lenght - 1) {
+                    if (box[down] == -1) flag = true
+                    else if (box[down] == -2) {
+                        box[down] = mx + 1
+                        k++
+                    }
+                }
+            }
+        }
+        if (k == 0) throw IndexOutOfBoundsException()
+    }
+    val otv = StringBuilder()
+    var road = box.maxOf { it } - 1
+    val find = -1
+    val start = box.indexOf(0)
+    flag = false
+    while (!flag) {
+        for (i in 0 until box.count()) {
+            if (box[i] == road) {
+                val left = i - 1
+                val right = i + 1
+                val up = i - lenght
+                val down = i + lenght
+                if (i % lenght >= 1) {
+                    if (box[left] == find) {
+                        otv.append("l")
+                        box[i] = find
+                        road--
+                        break
+                    }
+                }
+                if (i <= box.count() - 2 && (i == 0 || i % lenght != lenght - 1)) {
+                    if (box[right] == find) {
+                        otv.append("r")
+                        box[i] = find
+                        road--
+                        break
+                    }
+                }
+                if (i >= lenght) {
+                    if (box[up] == find) {
+                        otv.append("u")
+                        box[i] = find
+                        road--
+                        break
+                    }
+                }
+                if (i <= box.count() - lenght - 1) {
+                    if (box[down] == find) {
+                        otv.append("d")
+                        box[i] = find
+                        road--
+                        break
+                    }
+                }
+            }
+        }
+        if (box[start] == find) break
+    }
+    return otv.toString().reversed()
+}
