@@ -500,93 +500,71 @@ fun maze(inputName: String): String {
             }
         }
     }
-    val otv = StringBuilder()
     val side = listOf(-1, 1, -length, length)
-    val find = -1
-    val start = box.indexOf(0)
+    val letters = listOf("l", "r", "u", "d")
     var mx = box.maxOf { it }
     if (mx != 0) throw IndexOutOfBoundsException()
     var wave = false
-    var p = false
-    while (box[start] != find) {
-        if (wave && !p) {
-            mx = box.maxOf { it } - 1
-            p = true
-        } else if (!wave) mx = box.maxOf { it }
+    while (!wave) {
+        mx = box.maxOf { it }
         var k = 0
-        for (i in 0 until box.count()) {
-            if (box[i] == mx) {
+        box.forEachIndexed { i, it ->
+            if (it == mx) {
+                val l = i % length >= 1
+                val r = i <= box.count() - 2 && (i == 0 || i % length != length - 1)
+                val u = i >= length
+                val d = i <= box.count() - length - 1
                 var n = 0
-                if (i % length >= 1) { // left
-                    if (!wave) {
-                        if (box[i + side[n]] == -1) {
-                            wave = true
-                            break
-                        } else if (box[i + side[n]] == -2) {
+                var flag = false
+                val st = listOf(l, r, u, d)
+                while (n != 4) {
+                    if (st[n]) {
+                        if (box[i + side[n]] == -1) wave = true
+                        else if (box[i + side[n]] == -2) {
                             box[i + side[n]] = mx + 1
                             k++
                         }
-                    } else if (box[i + side[n]] == find) {
-                        otv.append("l")
-                        box[i] = find
-                        mx--
-                        break
                     }
-                }
-                n++
-                if (i <= box.count() - 2 && (i == 0 || i % length != length - 1)) { // right
-                    if (!wave) {
-                        if (box[i + side[n]] == -1) {
-                            wave = true
-                            break
-                        } else if (box[i + side[n]] == -2) {
-                            box[i + side[n]] = mx + 1
-                            k++
-                        }
-                    } else if (box[i + side[n]] == find) {
-                        otv.append("r")
-                        box[i] = find
-                        mx--
-                        break
-                    }
-                }
-                n++
-                if (i >= length) { // up
-                    if (!wave) {
-                        if (box[i + side[n]] == -1) {
-                            wave = true
-                            break
-                        } else if (box[i + side[n]] == -2) {
-                            box[i + side[n]] = mx + 1
-                            k++
-                        }
-                    } else if (box[i + side[n]] == find) {
-                        otv.append("u")
-                        box[i] = find
-                        mx--
-                        break
-                    }
-                }
-                n++
-                if (i <= box.count() - length - 1) { // down
-                    if (!wave) {
-                        if (box[i + side[n]] == -1) {
-                            wave = true
-                            break
-                        } else if (box[i + side[n]] == -2) {
-                            box[i + side[n]] = mx + 1
-                            k++
-                        }
-                    } else if (box[i + side[n]] == find) {
-                        otv.append("d")
-                        box[i] = find
-                        mx--
-                        break
-                    }
+                    n++
                 }
             }
         }
-        if (k == 0 && !wave) throw IndexOutOfBoundsException()
+        if (k == 0) throw IndexOutOfBoundsException()
+    }
+    val otv = StringBuilder()
+    var road = box.maxOf { it } - 1
+    val find = -1
+    val start = box.indexOf(0)
+    while (box[start] != find) {
+        for (i in 0 until box.count()) {
+            if (box[i] == road) {
+                val l = i % length >= 1
+                val r = i <= box.count() - 2 && (i == 0 || i % length != length - 1)
+                val u = i >= length
+                val d = i <= box.count() - length - 1
+                var n = 0
+                var flag = false
+                val st = listOf(l, r, u, d)
+                while (n != 4) {
+                    if (st[n]) {
+                        if (box[i + side[n]] == find) {
+                            otv.append(letters[n])
+                            box[i] = find
+                            road--
+                            flag = true
+                            break
+                        }
+                    }
+                    n++
+                }
+                if (flag) break
+            }
+        }
     }
     return otv.toString().reversed()
 }
+
+
+
+
+
