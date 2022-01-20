@@ -500,99 +500,93 @@ fun maze(inputName: String): String {
             }
         }
     }
-    val side = listOf(-1, 1, -length, length)
-    var mx = box.maxOf { it }
-    if (mx != 0) throw IndexOutOfBoundsException()
-    var flag = false
-    while (!flag) {
-        mx = box.maxOf { it }
-        var k = 0
-        box.forEachIndexed { i, it ->
-            if (it == mx) {
-                var n = 0
-                if (i % length >= 1) {
-                    if (box[i + side[n]] == -1) flag = true
-                    else if (box[i + side[n]] == -2) {
-                        box[i + side[n]] = mx + 1
-                        k++
-                    }
-                }
-                n++
-                if (i <= box.count() - 2 && (i == 0 || i % length != length - 1)) {
-                    if (box[i + side[n]] == -1) flag = true
-                    else if (box[i + side[n]] == -2) {
-                        box[i + side[n]] = mx + 1
-                        k++
-                    }
-                }
-                n++
-                if (i >= length) {
-                    if (box[i + side[n]] == -1) flag = true
-                    else if (box[i + side[n]] == -2) {
-                        box[i + side[n]] = mx + 1
-                        k++
-                    }
-                }
-                n++
-                if (i <= box.count() - length - 1) {
-                    if (box[i + side[n]] == -1) flag = true
-                    else if (box[i + side[n]] == -2) {
-                        box[i + side[n]] = mx + 1
-                        k++
-                    }
-                }
-            }
-        }
-        if (k == 0) throw IndexOutOfBoundsException()
-    }
     val otv = StringBuilder()
-    var road = box.maxOf { it } - 1
+    val side = listOf(-1, 1, -length, length)
     val find = -1
     val start = box.indexOf(0)
-    flag = false
-    while (!flag) {
+    var mx = box.maxOf { it }
+    if (mx != 0) throw IndexOutOfBoundsException()
+    var wave = false
+    var p = false
+    while (box[start] != find) {
+        if (wave && !p) {
+            mx = box.maxOf { it } - 1
+            p = true
+        } else if (!wave) mx = box.maxOf { it }
+        var k = 0
         for (i in 0 until box.count()) {
-            if (box[i] == road) {
+            if (box[i] == mx) {
                 var n = 0
-                if (i % length >= 1) {
-                    if (box[i + side[n]] == find) {
+                if (i % length >= 1) { // left
+                    if (!wave) {
+                        if (box[i + side[n]] == -1) {
+                            wave = true
+                            break
+                        } else if (box[i + side[n]] == -2) {
+                            box[i + side[n]] = mx + 1
+                            k++
+                        }
+                    } else if (box[i + side[n]] == find) {
                         otv.append("l")
                         box[i] = find
-                        road--
+                        mx--
                         break
                     }
                 }
                 n++
-                if (i <= box.count() - 2 && (i == 0 || i % length != length - 1)) {
-                    if (box[i + side[n]] == find) {
+                if (i <= box.count() - 2 && (i == 0 || i % length != length - 1)) { // right
+                    if (!wave) {
+                        if (box[i + side[n]] == -1) {
+                            wave = true
+                            break
+                        } else if (box[i + side[n]] == -2) {
+                            box[i + side[n]] = mx + 1
+                            k++
+                        }
+                    } else if (box[i + side[n]] == find) {
                         otv.append("r")
                         box[i] = find
-                        road--
+                        mx--
                         break
                     }
                 }
                 n++
-                if (i >= length) {
-                    if (box[i + side[n]] == find) {
+                if (i >= length) { // up
+                    if (!wave) {
+                        if (box[i + side[n]] == -1) {
+                            wave = true
+                            break
+                        } else if (box[i + side[n]] == -2) {
+                            box[i + side[n]] = mx + 1
+                            k++
+                        }
+                    } else if (box[i + side[n]] == find) {
                         otv.append("u")
                         box[i] = find
-                        road--
+                        mx--
                         break
                     }
                 }
                 n++
-                if (i <= box.count() - length - 1) {
-                    if (box[i + side[n]] == find) {
+                if (i <= box.count() - length - 1) { // down
+                    if (!wave) {
+                        if (box[i + side[n]] == -1) {
+                            wave = true
+                            break
+                        } else if (box[i + side[n]] == -2) {
+                            box[i + side[n]] = mx + 1
+                            k++
+                        }
+                    } else if (box[i + side[n]] == find) {
                         otv.append("d")
                         box[i] = find
-                        road--
+                        mx--
                         break
                     }
                 }
             }
         }
-        if (box[start] == find) break
+        if (k == 0 && !wave) throw IndexOutOfBoundsException()
     }
     return otv.toString().reversed()
 }
-//
