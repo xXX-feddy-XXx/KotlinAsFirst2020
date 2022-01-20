@@ -488,9 +488,9 @@ fun maze(inputName: String): String {
         if (it.contains(Regex("""[^\.#\^\*\n]"""))) throw IndexOutOfBoundsException()
     }
     val box = mutableListOf<Int>()
-    var lenght = 0
+    var length = 0
     for (line in File(inputName).readLines()) {
-        lenght = line.length
+        length = line.length
         line.forEach {
             when (it.toString()) {
                 "*" -> box.add(0)
@@ -500,6 +500,7 @@ fun maze(inputName: String): String {
             }
         }
     }
+    val side = listOf(-1, 1, -length, length)
     var mx = box.maxOf { it }
     if (mx != 0) throw IndexOutOfBoundsException()
     var flag = false
@@ -508,35 +509,35 @@ fun maze(inputName: String): String {
         var k = 0
         box.forEachIndexed { i, it ->
             if (it == mx) {
-                val left = i - 1
-                val right = i + 1
-                val up = i - lenght
-                val down = i + lenght
-                if (i % lenght >= 1) {
-                    if (box[left] == -1) flag = true
-                    else if (box[left] == -2) {
-                        box[left] = mx + 1
+                var n = 0
+                if (i % length >= 1) {
+                    if (box[i + side[n]] == -1) flag = true
+                    else if (box[i + side[n]] == -2) {
+                        box[i + side[n]] = mx + 1
                         k++
                     }
                 }
-                if (i <= box.count() - 2 && (i == 0 || i % lenght != lenght - 1)) {
-                    if (box[right] == -1) flag = true
-                    else if (box[right] == -2) {
-                        box[right] = mx + 1
+                n++
+                if (i <= box.count() - 2 && (i == 0 || i % length != length - 1)) {
+                    if (box[i + side[n]] == -1) flag = true
+                    else if (box[i + side[n]] == -2) {
+                        box[i + side[n]] = mx + 1
                         k++
                     }
                 }
-                if (i >= lenght) {
-                    if (box[up] == -1) flag = true
-                    else if (box[up] == -2) {
-                        box[up] = mx + 1
+                n++
+                if (i >= length) {
+                    if (box[i + side[n]] == -1) flag = true
+                    else if (box[i + side[n]] == -2) {
+                        box[i + side[n]] = mx + 1
                         k++
                     }
                 }
-                if (i <= box.count() - lenght - 1) {
-                    if (box[down] == -1) flag = true
-                    else if (box[down] == -2) {
-                        box[down] = mx + 1
+                n++
+                if (i <= box.count() - length - 1) {
+                    if (box[i + side[n]] == -1) flag = true
+                    else if (box[i + side[n]] == -2) {
+                        box[i + side[n]] = mx + 1
                         k++
                     }
                 }
@@ -552,36 +553,36 @@ fun maze(inputName: String): String {
     while (!flag) {
         for (i in 0 until box.count()) {
             if (box[i] == road) {
-                val left = i - 1
-                val right = i + 1
-                val up = i - lenght
-                val down = i + lenght
-                if (i % lenght >= 1) {
-                    if (box[left] == find) {
+                var n = 0
+                if (i % length >= 1) {
+                    if (box[i + side[n]] == find) {
                         otv.append("l")
                         box[i] = find
                         road--
                         break
                     }
                 }
-                if (i <= box.count() - 2 && (i == 0 || i % lenght != lenght - 1)) {
-                    if (box[right] == find) {
+                n++
+                if (i <= box.count() - 2 && (i == 0 || i % length != length - 1)) {
+                    if (box[i + side[n]] == find) {
                         otv.append("r")
                         box[i] = find
                         road--
                         break
                     }
                 }
-                if (i >= lenght) {
-                    if (box[up] == find) {
+                n++
+                if (i >= length) {
+                    if (box[i + side[n]] == find) {
                         otv.append("u")
                         box[i] = find
                         road--
                         break
                     }
                 }
-                if (i <= box.count() - lenght - 1) {
-                    if (box[down] == find) {
+                n++
+                if (i <= box.count() - length - 1) {
+                    if (box[i + side[n]] == find) {
                         otv.append("d")
                         box[i] = find
                         road--
