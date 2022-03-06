@@ -2,7 +2,11 @@
 
 package lesson6.task1
 
+<<<<<<< .merge_file_a22996
 import lesson4.task1.isPalindrome
+=======
+import lesson2.task2.daysInMonth
+>>>>>>> .merge_file_a24620
 
 // Урок 6: разбор строк, исключения
 // Максимальное количество баллов = 13
@@ -76,7 +80,33 @@ fun main() {
  * Обратите внимание: некорректная с точки зрения календаря дата (например, 30.02.2009) считается неверными
  * входными данными.
  */
-fun dateStrToDigit(str: String): String = TODO()
+
+fun dateStrToDigit(str: String): String {
+    val mas = str.split(" ")
+    try {
+        val month = when (mas[1]) {
+            "января" -> 1
+            "февраля" -> 2
+            "марта" -> 3
+            "апреля" -> 4
+            "мая" -> 5
+            "июня" -> 6
+            "июля" -> 7
+            "августа" -> 8
+            "сентября" -> 9
+            "октября" -> 10
+            "ноября" -> 11
+            "декабря" -> 12
+            else -> 0
+        }
+        return if (daysInMonth(month, mas[2].toInt()) < mas[0].toInt() || month == 0) ""
+        else return String.format("%02d.%02d.%d", mas[0].toInt(), month, mas[2].toInt())
+    } catch (e: IndexOutOfBoundsException) {
+        return ""
+    } catch (e: NumberFormatException) {
+        return ""
+    }
+}
 
 /**
  * Средняя (4 балла)
@@ -104,7 +134,23 @@ fun dateDigitToStr(digital: String): String = TODO()
  *
  * PS: Дополнительные примеры работы функции можно посмотреть в соответствующих тестах.
  */
-fun flattenPhoneNumber(phone: String): String = TODO()
+fun flattenPhoneNumber(phone: String): String {
+    val symbols = listOf<String>("+", "-", "(", ")", " ")
+    val numbers = listOf<String>("0", "1", "2", "3", "4", "5", "6", "7", "8", "9")
+    val otv = StringBuilder()
+    var flag = false
+    if ("+" in phone) otv.append("+")
+    phone.forEach {
+        if (it.toString() in numbers) {
+            otv.append(it.toString())
+            flag = false
+        } else if (it.toString() !in symbols) return ""
+        if (it.toString() == "(") flag = true
+        if (it.toString() == ")" && flag) return ""
+    }
+    return if (otv.toString() != "+") otv.toString()
+    else ""
+}
 
 /**
  * Средняя (5 баллов)
@@ -116,7 +162,13 @@ fun flattenPhoneNumber(phone: String): String = TODO()
  * Прочитать строку и вернуть максимальное присутствующее в ней число (717 в примере).
  * При нарушении формата входной строки или при отсутствии в ней чисел, вернуть -1.
  */
-fun bestLongJump(jumps: String): Int = TODO()
+fun bestLongJump(jumps: String): Int {
+    if (jumps.contains(Regex("""([^-%\s\d])"""))) return -1
+    if (Regex("""\d+""").find(jumps) == null) return -1
+    val mas = Regex("""\d+""").findAll(jumps)
+    return mas.maxOf { it.value.toInt() }
+}
+
 
 /**
  * Сложная (6 баллов)
@@ -129,7 +181,11 @@ fun bestLongJump(jumps: String): Int = TODO()
  * При нарушении формата входной строки, а также в случае отсутствия удачных попыток,
  * вернуть -1.
  */
-fun bestHighJump(jumps: String): Int = TODO()
+fun bestHighJump(jumps: String): Int {
+    if (jumps.contains(Regex("""([^-%\s\d+])"""))) return -1
+    if (Regex("""\d+""").find(jumps) == null || (Regex("""\+""")).find(jumps) == null) return -1
+    return Regex("""\d+\s\+""").findAll(jumps).maxOf { it.value.split(" ")[0].toInt() }
+}
 
 /**
  * Сложная (6 баллов)
@@ -165,23 +221,20 @@ fun firstDuplicateIndex(str: String): Int = TODO()
  * Все цены должны быть больше нуля либо равны нулю.
  */
 fun mostExpensive(description: String): String {
-    var name = ""
-    var price = 0.0
-    var parts = description.split("; ")
-    return try {
-        for (element in parts.indices) {
-            val pair = parts[element].split(" ")
-            if (price <= pair[1].toDouble()) {
-                price = pair[1].toDouble()
-                name = pair[0]
-            }
+
+    try {
+        val mas = description.split("; ")
+        val list = mutableListOf<Pair<String, Double>>()
+        mas.forEach {
+            val box = it.split(" ")
+            list.add(Pair(box[0], box[1].toDouble()))
         }
-        return name
-    } catch (e: NumberFormatException) {
-        ""
-    } catch (a: IndexOutOfBoundsException) {
-        ""
+        val mx = list.maxOf { it.second }
+        list.forEach { if (it.second == mx) return it.first }
+    } catch (e: IndexOutOfBoundsException) {
     }
+    return ""
+
 }
 
 /**

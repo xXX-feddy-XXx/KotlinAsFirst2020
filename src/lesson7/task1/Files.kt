@@ -64,12 +64,14 @@ fun alignFile(inputName: String, lineLength: Int, outputName: String) {
  * Подчёркивание в середине и/или в конце строк значения не имеет.
  */
 fun deleteMarked(inputName: String, outputName: String) {
+
     val reg = Regex("^_")
     val text = File(inputName).readLines()
     File(outputName).bufferedWriter().use {
         for (i in text.indices) {
             if (!reg.containsMatchIn(text[i]))
                 it.write(text[i] + "\n")
+
         }
     }
 }
@@ -83,25 +85,20 @@ fun deleteMarked(inputName: String, outputName: String) {
  * Регистр букв игнорировать, то есть буквы е и Е считать одинаковыми.
  *
  */
+
 fun countSubstrings(inputName: String, substrings: List<String>): Map<String, Int> {
-    val text = File(inputName).readText().toList().map { it.lowercase() }
-    val textLength = text.size
-    var map = mutableMapOf<String, Int>()
-    for (i in substrings) map[i] = 0
-    for (element in substrings) {
-        if (map[element] != 0) continue
-        val substr = element.lowercase()
-        val substrFirst = substr.first()
-        val substrSize = substr.length
-        text.forEachIndexed { indexText, charText ->
-            if (charText == substrFirst.toString() && indexText + substrSize <= textLength) {
-                var word = true
-                for (indexSub in element.indices) {
-                    if (substr[indexSub].toString() != text[indexText + indexSub])
-                        word = false
-                }
-                if (word || charText == substr)
-                    map[element] = map[element]!! + 1
+    val sub = substrings.toSet().toList()
+    val otv = mutableMapOf<String, Int>()
+    File(inputName).forEachLine { str ->
+        sub.forEach { word ->
+            var k = 0
+            str.lowercase().windowed(word.count()).forEach { if (it == word.lowercase()) k++ }
+            otv[word] = otv.getOrPut(word) { 0 } + k
+        }
+    }
+    return otv
+}
+
 
             }
         }
@@ -161,7 +158,17 @@ fun sibilants(inputName: String, outputName: String) {
  *
  */
 fun centerFile(inputName: String, outputName: String) {
-    TODO()
+    var mx = 0
+    File(inputName).forEachLine { if (it.trim().length > mx) mx = it.trim().length }
+    File(outputName).bufferedWriter().use {
+        File(inputName).forEachLine { line ->
+            for (i in 1..(mx - line.trim().length) / 2) {
+                it.write(" ")
+            }
+            it.write(line.trim())
+            it.newLine()
+        }
+    }
 }
 
 /**
@@ -499,4 +506,89 @@ fun printMultiplicationProcess(lhv: Int, rhv: Int, outputName: String) {
 fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
     TODO()
 }
+
+fun maze(inputName: String): String {
+    File(inputName).forEachLine {
+        if (it.contains(Regex("""[^\.#\^\*\n]"""))) throw IndexOutOfBoundsException()
+    }
+    val box = mutableListOf<Int>()
+    var length = 0
+    for (line in File(inputName).readLines()) {
+        length = line.length
+        line.forEach {
+            when (it.toString()) {
+                "*" -> box.add(0)
+                "^" -> box.add(-1)
+                "." -> box.add(-2)
+                else -> box.add(-10)
+            }
+        }
+    }
+    val side = listOf(-1, 1, -length, length)
+    val letters = listOf("l", "r", "u", "d")
+    var mx = box.maxOf { it }
+    if (mx != 0) throw IndexOutOfBoundsException()
+    var wave = false
+    while (!wave) {
+        mx = box.maxOf { it }
+        var k = 0
+        box.forEachIndexed { i, it ->
+            if (it == mx) {
+                val l = i % length >= 1
+                val r = i <= box.count() - 2 && (i == 0 || i % length != length - 1)
+                val u = i >= length
+                val d = i <= box.count() - length - 1
+                var n = 0
+                var flag = false
+                val st = listOf(l, r, u, d)
+                while (n != 4) {
+                    if (st[n]) {
+                        if (box[i + side[n]] == -1) wave = true
+                        else if (box[i + side[n]] == -2) {
+                            box[i + side[n]] = mx + 1
+                            k++
+                        }
+                    }
+                    n++
+                }
+            }
+        }
+        if (k == 0) throw IndexOutOfBoundsException()
+    }
+    val otv = StringBuilder()
+    var road = box.maxOf { it } - 1
+    val find = -1
+    val start = box.indexOf(0)
+    while (box[start] != find) {
+        for (i in 0 until box.count()) {
+            if (box[i] == road) {
+                val l = i % length >= 1
+                val r = i <= box.count() - 2 && (i == 0 || i % length != length - 1)
+                val u = i >= length
+                val d = i <= box.count() - length - 1
+                var n = 0
+                var flag = false
+                val st = listOf(l, r, u, d)
+                while (n != 4) {
+                    if (st[n]) {
+                        if (box[i + side[n]] == find) {
+                            otv.append(letters[n])
+                            box[i] = find
+                            road--
+                            flag = true
+                            break
+                        }
+                    }
+                    n++
+                }
+                if (flag) break
+            }
+        }
+    }
+    return otv.toString().reversed()
+}
+
+
+
+
 
